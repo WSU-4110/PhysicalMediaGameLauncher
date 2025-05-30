@@ -55,4 +55,17 @@ public class UserProfileManager
         Console.WriteLine($"Profile '{profilename}' deleted.");
         return true;
     }
+	public bool selectProfile(string profilename)
+    {
+        var profile = profiles.Find(p => p.profilename == profilename);
+        if (profile == null)
+        {
+            Console.WriteLine("Profile not found.");
+            return false;
+        }
+
+        selectedProfile = profile;
+        Console.WriteLine($"Profile '{profilename}' selected.");
+        return true;
+    }
 }
