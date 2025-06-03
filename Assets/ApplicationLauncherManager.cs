@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class ApplicationLauncherManager : MonoBehaviour
 {
-    private ApplicationLauncherManager _instance;
+    private static ApplicationLauncherManager _instance;
     public static ApplicationLauncherManager Instance
     {
         get
@@ -31,7 +31,7 @@ public void LaunchApplication(string exePath)
     {
         if (!File.Exists(exePath))
         {
-            Debug.LogError($"File not found: {exePath}");
+            UnityEngine.Debug.LogError($"File not found: {exePath}");
             return;
         }
 
@@ -44,7 +44,7 @@ public void LaunchApplication(string exePath)
             };
 
             currentProcess = Process.Start(startInfo);
-            Debug.Log($"Launched: {exePath}");
+            UnityEngine.Debug.Log($"Launched: {exePath}");
 
             HideLauncherUI();
 
@@ -54,17 +54,15 @@ public void LaunchApplication(string exePath)
         }
         catch (Exception ex)
         {
-            Debug.LogError($"Error launching application: {ex.Message}");
+            UnityEngine.Debug.LogError($"Error launching application: {ex.Message}");
         }
     }
 
     private void OnApplicationExited(object sender, EventArgs e)
     {
-        UnityMainThreadDispatcher.Instance().Enqueue(() =>
-        {
-            Debug.Log("Application exited. Returning to launcher.");
-            ShowLauncherUI();
-        });
+       UnityEngine.Debug.Log("Application exited. Returning to launcher.");
+       ShowLauncherUI();
+
     }
 
     private void HideLauncherUI()
