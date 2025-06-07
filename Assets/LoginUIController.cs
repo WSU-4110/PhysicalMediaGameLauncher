@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-public class loginuicontroller : MonoBehaviour
+public class LoginUIController : MonoBehaviour
 {
     public TMP_InputField nameinput;
     public TMP_InputField pininput;
@@ -11,7 +11,7 @@ public class loginuicontroller : MonoBehaviour
     public Transform profilelistcontainer;
     public TextMeshProUGUI feedbacktext;
 
-    private userprofilemanager profilemanager = new userprofilemanager();
+    private UserProfileManager profilemanager = new UserProfileManager();
 
     void Start()
     {
