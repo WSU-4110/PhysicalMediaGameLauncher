@@ -31,7 +31,7 @@ public class LibraryManager : MonoBehaviour
 {
     public static LibraryManager instance { get; private set; } = null;
     private static string libraryCachePath = Path.Join(Application.persistentDataPath, "library.json");
-    private static string libraryImagePreviews = Path.Join(Application.persistentDataPath, "library", "images");
+    public static string libraryImagePreviews = Path.Join(Application.persistentDataPath, "library", "images");
 
     public Dictionary<string, Game> games = null;
 
