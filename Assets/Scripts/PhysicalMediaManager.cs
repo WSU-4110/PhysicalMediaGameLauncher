@@ -15,6 +15,7 @@ class GameMetadata
     {
         return new Game
         {
+            id = this.id,
             gameName = this.gameName,
             gamePath = this.gamePath,
             gameDrive = this.gameDrive,
@@ -49,8 +50,11 @@ public class PhysicalMediaManager : MonoBehaviour
         try
         {
             GameMetadata gameMetadata = JsonUtility.FromJson<GameMetadata>(driveGamePath);
+            Game game = gameMetadata.convertToGame();
+            try{ File.Copy(Path.Join(drivePath, "preview.png"), game.GetImagePath(false)); }
+            catch (System.Exception) { Debug.LogError($"[PhysicalMediaManager] Failed to copy image preview! Reason {e}"); }
             if (LibraryManager.instance != null)
-                LibraryManager.instance.AddGameToLibrary(gameMetadata.id, gameMetadata.convertToGame());
+                LibraryManager.instance.AddGameToLibrary(gameMetadata.id, game);
         }
         catch (System.Exception e)
         {
@@ -61,7 +65,7 @@ public class PhysicalMediaManager : MonoBehaviour
     public void RemoveGamesFromDrive(string drivePath)
     {
         foreach (string gameID in driveToGameIDS[drivePath])
-            if(LibraryManager.instance != null)
+            if (LibraryManager.instance != null)
                 LibraryManager.instance.RemoveGameFromLibrary(gameID);
     }
 
