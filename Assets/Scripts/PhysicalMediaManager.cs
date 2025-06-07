@@ -44,7 +44,7 @@ public class PhysicalMediaManager : MonoBehaviour
 
     public void ScanDriveForGames(string drivePath)
     {
-        string driveGamePath = System.IO.Path.Join(drivePath, DRIVE_GAME_METADATA_FILENAME);
+        string driveGamePath = Path.Join(drivePath, DRIVE_GAME_METADATA_FILENAME);
 
         try
         {

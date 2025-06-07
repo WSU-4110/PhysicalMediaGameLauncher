@@ -14,14 +14,14 @@ public class Game
 
     public string GetFullPath()
     {
-        return System.IO.Path.Join(gameDrive, gamePath);
+        return Path.Join(gameDrive, gamePath);
     }
 }
 
 public class LibraryManager : MonoBehaviour
 {
     public static LibraryManager instance { get; private set; } = null;
-    private static string libraryCachePath = System.IO.Path.Join(Application.persistentDataPath, "library.json");
+    private static string libraryCachePath = Path.Join(Application.persistentDataPath, "library.json");
 
     public Dictionary<string, Game> games = null;
 
