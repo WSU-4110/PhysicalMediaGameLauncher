@@ -1,0 +1,146 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using UnityEngine;
+
+[Serializable]
+public class UserProfile
+{
+    public string profilename;
+    public string pin;
+    public string profilepicturepath;
+}
+
+[Serializable]
+public class ProfileListWrapper
+{
+    public List<UserProfile> profiles;
+}
+
+public class UserProfileManager
+{
+    private List<UserProfile> profiles = new List<UserProfile>();
+    private UserProfile selectedprofile = null;
+
+    private string savePath => Application.persistentDataPath + "/profiles.json";
+
+    public void saveProfiles()
+    {
+        string json = JsonUtility.ToJson(new ProfileListWrapper { profiles = this.profiles });
+        File.WriteAllText(savePath, json);
+    }
+
+    public void loadProfiles()
+    {
+        if (File.Exists(savePath))
+        {
+            string json = File.ReadAllText(savePath);
+            this.profiles = JsonUtility.FromJson<ProfileListWrapper>(json).profiles;
+        }
+    }
+
+    public bool createProfile(string profilename, string pin, string profilepicturepath)
+    {
+        if (pin.Length != 4 || !int.TryParse(pin, out _))
+        {
+            Debug.Log("PIN must be a 4-digit number.");
+            return false;
+        }
+
+        if (profiles.Exists(p => p.profilename == profilename))
+        {
+            Debug.Log("Profile name already exists.");
+            return false;
+        }
+
+        profiles.Add(new UserProfile
+        {
+            profilename = profilename,
+            pin = pin,
+            profilepicturepath = profilepicturepath
+        });
+
+        Debug.Log($"Profile '{profilename}' created.");
+        saveProfiles();
+        return true;
+    }
+
+    public bool deleteProfile(string profilename)
+    {
+        var profile = profiles.Find(p => p.profilename == profilename);
+        if (profile == null)
+        {
+            Debug.Log("Profile not found.");
+            return false;
+        }
+
+        profiles.Remove(profile);
+        if (selectedprofile == profile)
+        {
+            selectedprofile = null;
+        }
+
+        Debug.Log($"Profile '{profilename}' deleted.");
+        saveProfiles();
+        return true;
+    }
+
+    public bool selectProfile(string profilename)
+    {
+        var profile = profiles.Find(p => p.profilename == profilename);
+        if (profile == null)
+        {
+            Debug.Log("Profile not found.");
+            return false;
+        }
+
+        selectedprofile = profile;
+        Debug.Log($"Profile '{profilename}' selected.");
+        return true;
+    }
+
+    public bool editProfile(string oldprofilename, string newprofilename, string newpin, string newprofilepicturepath)
+    {
+        var profile = profiles.Find(p => p.profilename == oldprofilename);
+        if (profile == null)
+        {
+            Debug.Log("Profile not found.");
+            return false;
+        }
+
+        if (newpin.Length != 4 || !int.TryParse(newpin, out _))
+        {
+            Debug.Log("PIN must be a 4-digit number.");
+            return false;
+        }
+
+        profile.profilename = newprofilename;
+        profile.pin = newpin;
+        profile.profilepicturepath = newprofilepicturepath;
+
+        Debug.Log($"Profile '{oldprofilename}' updated.");
+        saveProfiles();
+        return true;
+    }
+
+    public bool verifyPin(string inputPin)
+    {
+        if (selectedprofile == null)
+        {
+            Debug.Log("No profile selected.");
+            return false;
+        }
+
+        return selectedprofile.pin == inputPin;
+    }
+
+    public List<UserProfile> getAllProfiles()
+    {
+        return profiles;
+    }
+
+    public UserProfile getSelectedProfile()
+    {
+        return selectedprofile;
+    }
+}
