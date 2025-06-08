@@ -44,15 +44,15 @@ private Process currentProcess;
 
 public void LaunchApplication(string appPath)
 {
-    ProcessStartInfo startInfo;
-
-#if UNITY_STANDALONE_OSX
-    if (!Directory.Exists(appPath))
+    if (!File.Exists(appPath))
     {
-        UnityEngine.Debug.LogError($"App not found: {appPath}");
+        UnityEngine.Debug.LogError($"File not found: {appPath}");
         return;
     }
 
+    ProcessStartInfo startInfo;
+
+#if UNITY_STANDALONE_OSX
     startInfo = new ProcessStartInfo
     {
         FileName = "open",
@@ -60,12 +60,6 @@ public void LaunchApplication(string appPath)
         UseShellExecute = false
     };
 #else
-    if (!File.Exists(appPath))
-    {
-        UnityEngine.Debug.LogError($"File not found: {appPath}");
-        return;
-    }
-
     startInfo = new ProcessStartInfo
     {
         FileName = appPath,
