@@ -30,10 +30,10 @@ public class Game
 public class LibraryManager : MonoBehaviour
 {
     public static LibraryManager instance { get; private set; } = null;
-    private static string libraryCachePath = Path.Join(Application.persistentDataPath, "library.json");
-    public static string libraryImagePreviews = Path.Join(Application.persistentDataPath, "library", "images");
+    private static string libraryCachePath = ""; // Needs to be initalized on Awake
+    public static string libraryImagePreviews = ""; // Needs to be initalized on Awake
 
-    public Dictionary<string, Game> games = null;
+    public SerializableDictionary<string, Game> games = null;
 
     void Awake()
     {
@@ -42,6 +42,10 @@ public class LibraryManager : MonoBehaviour
             Destroy(gameObject);
             return;
         }
+
+        libraryCachePath = Path.Join(Application.persistentDataPath, "library.json");
+        libraryImagePreviews = Path.Join(Application.persistentDataPath, "library", "images");
+
         LoadCache();
         instance = this;
         DontDestroyOnLoad(gameObject);
@@ -52,14 +56,15 @@ public class LibraryManager : MonoBehaviour
         try
         {
             string json = File.ReadAllText(libraryCachePath);
-            games = JsonUtility.FromJson<Dictionary<string, Game>>(json);
-            foreach (Game game in games.Values) {
+            games = JsonUtility.FromJson<SerializableDictionary<string, Game>>(json);
+            foreach (Game game in games.Values)
+            {
                 game.isAvaliable = File.Exists(game.GetFullPath());
             }
         }
         catch (System.Exception e)
         {
-            games = new Dictionary<string, Game>();
+            games = new SerializableDictionary<string, Game>();
             Debug.LogError($"[LibraryManager] Error reading cache! Reason: {e.Message}");
         }
     }

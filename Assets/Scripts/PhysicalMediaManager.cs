@@ -49,7 +49,7 @@ public class PhysicalMediaManager : MonoBehaviour
 
         try
         {
-            GameMetadata gameMetadata = JsonUtility.FromJson<GameMetadata>(driveGamePath);
+            GameMetadata gameMetadata = JsonUtility.FromJson<GameMetadata>(File.ReadAllText(driveGamePath));
             Game game = gameMetadata.convertToGame();
             try{ File.Copy(Path.Join(drivePath, "preview.png"), game.GetImagePath(false)); }
             catch (System.Exception e) { Debug.LogError($"[PhysicalMediaManager] Failed to copy image preview! Reason {e}"); }
