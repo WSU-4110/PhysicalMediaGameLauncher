@@ -24,19 +24,7 @@ public class UIProfileCreateManager : MonoBehaviour
 
     void OnEnable()
     {
-        ControllerManager.instance.confirmButtonPressed += OnConfirm;
-        EventSystem.current.SetSelectedGameObject(profileName.gameObject);
-    }
-
-    void OnDisable()
-    {
-        ControllerManager.instance.confirmButtonPressed -= OnConfirm;
-    }
-
-
-    void OnConfirm()
-    {
-        UILauncherManager.instance.SwitchState(LauncherState.PROFILE_CREATE);
+        profileName.Select();
     }
 
     public void CreateProfile()

@@ -1,7 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using Unity.Collections;
+using UnityEditor.PackageManager;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
 using UnityEngine.WSA;
 
 
@@ -13,6 +17,7 @@ public enum LauncherState
     PROFILE_CREATE,
     APPLICATION_SELECT,
     SETTINGS,
+    INGAME,
 }
 
 
@@ -51,9 +56,12 @@ public class UILauncherManager : MonoBehaviour
                     case LauncherState.SETTINGS:
                         TransitionToScreen(settingsScreen);
                         break;
+                    case LauncherState.INGAME:
+                        TransitionToScreen(inGameScreen);
+                        break;
                     case LauncherState.NONE:
                     default:
-                        currentLauncherState = LauncherState.APPLICATION_SELECT;
+                        currentLauncherState = LauncherState.NONE;
                         break;
                 }
             }
@@ -68,6 +76,7 @@ public class UILauncherManager : MonoBehaviour
     public GameObject profileCreateScreen;
     public GameObject applicationSelectScreen;
     public GameObject settingsScreen;
+    public GameObject inGameScreen;
 
     private List<GameObject> _screens = null;
     public List<GameObject> screens
@@ -80,7 +89,8 @@ public class UILauncherManager : MonoBehaviour
                     profileSelectScreen,
                     profileCreateScreen,
                     applicationSelectScreen,
-                    settingsScreen
+                    settingsScreen,
+                    inGameScreen
                 };
             return _screens;
         }
@@ -110,6 +120,27 @@ public class UILauncherManager : MonoBehaviour
         if (currentlyActivatedScreen != null)
             currentlyActivatedScreen.SetActive(false);
         destinationUI.SetActive(true);
+        Debug.Log($"{(currentlyActivatedScreen != null ? $"{currentlyActivatedScreen.name} -> " : "")}{destinationUI.name}");
         currentlyActivatedScreen = destinationUI;
+    }
+
+    void Update()
+    {
+        if (EventSystem.current.currentSelectedGameObject == null)
+        {
+            Button[] btns = FindObjectsByType<Button>(FindObjectsSortMode.None);
+            if (btns.Length > 0)
+            {
+                btns[0].Select();
+                return;
+            }
+
+            TMP_InputField[] inputs = FindObjectsByType<TMP_InputField>(FindObjectsSortMode.None);
+            if (inputs.Length > 0)
+            {
+                inputs[0].Select();
+                return;
+            }
+        }
     }
 }

@@ -8,22 +8,28 @@ class GameMetadata
 {
     public string id;
     public string gameName;
-    public string gameDrive;
     public string gamePath;
 
-    public Game convertToGame()
+    public Game convertToGame(string gameDrive)
     {
         return new Game
         {
             id = this.id,
             gameName = this.gameName,
             gamePath = this.gamePath,
-            gameDrive = this.gameDrive,
+            gameDrive = gameDrive,
             isAvaliable = true,
         };
     }
 }
 
+
+[Serializable]
+
+class GameMetadataContainer
+{
+    public List<GameMetadata> games;
+}
 
 public class PhysicalMediaManager : MonoBehaviour
 {
@@ -49,12 +55,21 @@ public class PhysicalMediaManager : MonoBehaviour
 
         try
         {
-            GameMetadata gameMetadata = JsonUtility.FromJson<GameMetadata>(File.ReadAllText(driveGamePath));
-            Game game = gameMetadata.convertToGame();
-            try{ File.Copy(Path.Join(drivePath, "preview.png"), game.GetImagePath(false)); }
-            catch (System.Exception e) { Debug.LogWarning($"[PhysicalMediaManager] Failed to copy image preview! Reason {e}"); }
-            if (LibraryManager.instance != null)
-                LibraryManager.instance.AddGameToLibrary(gameMetadata.id, game);
+            GameMetadataContainer gamesMetadata = JsonUtility.FromJson<GameMetadataContainer>(File.ReadAllText(driveGamePath));
+            foreach (GameMetadata gameMetadata in gamesMetadata.games)
+            {
+                Game game = gameMetadata.convertToGame(drivePath);
+                try
+                {
+                    string img_path = game.GetImagePath(false);
+                    if (!Directory.Exists(Path.GetDirectoryName(img_path)))
+                        Directory.CreateDirectory(Path.GetDirectoryName(img_path));
+                    File.Copy(Path.Join(drivePath, $"{game.id}.png"), img_path);
+                }
+                catch (System.Exception e) { Debug.LogWarning($"[PhysicalMediaManager] Failed to copy image preview! Reason {e}"); }
+                if (LibraryManager.instance != null)
+                    LibraryManager.instance.AddGameToLibrary(gameMetadata.id, game);
+            }
         }
         catch (System.Exception e)
         {
@@ -64,9 +79,10 @@ public class PhysicalMediaManager : MonoBehaviour
 
     public void RemoveGamesFromDrive(string drivePath)
     {
-        foreach (string gameID in driveToGameIDS[drivePath])
-            if (LibraryManager.instance != null)
-                LibraryManager.instance.RemoveGameFromLibrary(gameID);
+        if (driveToGameIDS.ContainsKey(drivePath))
+            foreach (string gameID in driveToGameIDS[drivePath])
+                if (LibraryManager.instance != null)
+                    LibraryManager.instance.RemoveGameFromLibrary(gameID);
     }
 
 

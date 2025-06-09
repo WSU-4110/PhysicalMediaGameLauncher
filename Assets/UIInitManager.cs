@@ -28,7 +28,7 @@ public class UIInitManager : MonoBehaviour
     {
         yield return new WaitForSeconds(0.5f);
         ControllerManager.instance.confirmButtonPressed += OnConfirm;
-        if (UserProfileManager.instance.getAllProfiles().Count < 0)
+        if (UserProfileManager.instance.getAllProfiles().Count <= 0)
         {
             initContanier.SetActive(true);
         }
