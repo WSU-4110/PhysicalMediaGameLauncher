@@ -65,7 +65,7 @@ public class LibraryManager : MonoBehaviour
         catch (System.Exception e)
         {
             games = new SerializableDictionary<string, Game>();
-            Debug.LogError($"[LibraryManager] Error reading cache! Reason: {e.Message}");
+            Debug.LogWarning($"[LibraryManager] Error reading cache! Reason: {e.Message}");
         }
     }
 

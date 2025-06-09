@@ -19,7 +19,7 @@ public class LauncherUI : MonoBehaviour
 
             if (!string.IsNullOrEmpty(appPath))
             {
-                ApplicationLauncherManager.Instance.LaunchApplication(appPath);
+                ApplicationLauncherManager.instance.LaunchApplication(appPath);
             }
             else
             {

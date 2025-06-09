@@ -17,12 +17,25 @@ public class ProfileListWrapper
     public List<UserProfile> profiles;
 }
 
-public class UserProfileManager
+public class UserProfileManager : MonoBehaviour
 {
+    public static UserProfileManager instance { get; private set; } = null;
     private List<UserProfile> profiles = new List<UserProfile>();
     private UserProfile selectedprofile = null;
 
     private string savePath => Application.persistentDataPath + "/profiles.json";
+
+    void Awake()
+    {
+        if (instance != null)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        instance = this;
+        DontDestroyOnLoad(gameObject);
+        loadProfiles();
+    }
 
     public void saveProfiles()
     {
@@ -32,10 +45,14 @@ public class UserProfileManager
 
     public void loadProfiles()
     {
-        if (File.Exists(savePath))
+        try
         {
             string json = File.ReadAllText(savePath);
             this.profiles = JsonUtility.FromJson<ProfileListWrapper>(json).profiles;
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogWarning($"[UserProfileManager] Could not load profiles from {savePath}! Reason: {e.Message}");
         }
     }
 
@@ -43,13 +60,13 @@ public class UserProfileManager
     {
         if (pin.Length != 4 || !int.TryParse(pin, out _))
         {
-            Debug.Log("PIN must be a 4-digit number.");
+            Debug.Log("[UserProfileManager] PIN must be a 4-digit number.");
             return false;
         }
 
         if (profiles.Exists(p => p.profilename == profilename))
         {
-            Debug.Log("Profile name already exists.");
+            Debug.Log("[UserProfileManager] Profile name already exists.");
             return false;
         }
 
@@ -60,7 +77,7 @@ public class UserProfileManager
             profilepicturepath = profilepicturepath
         });
 
-        Debug.Log($"Profile '{profilename}' created.");
+        Debug.Log($"[UserProfileManager] Profile '{profilename}' created.");
         saveProfiles();
         return true;
     }
@@ -70,7 +87,7 @@ public class UserProfileManager
         var profile = profiles.Find(p => p.profilename == profilename);
         if (profile == null)
         {
-            Debug.Log("Profile not found.");
+            Debug.Log("[UserProfileManager] Profile not found.");
             return false;
         }
 
@@ -80,7 +97,7 @@ public class UserProfileManager
             selectedprofile = null;
         }
 
-        Debug.Log($"Profile '{profilename}' deleted.");
+        Debug.Log($"[UserProfileManager] Profile '{profilename}' deleted.");
         saveProfiles();
         return true;
     }
@@ -90,12 +107,12 @@ public class UserProfileManager
         var profile = profiles.Find(p => p.profilename == profilename);
         if (profile == null)
         {
-            Debug.Log("Profile not found.");
+            Debug.Log("[UserProfileManager] Profile not found.");
             return false;
         }
 
         selectedprofile = profile;
-        Debug.Log($"Profile '{profilename}' selected.");
+        Debug.Log($"[UserProfileManager] Profile '{profilename}' selected.");
         return true;
     }
 
@@ -104,13 +121,13 @@ public class UserProfileManager
         var profile = profiles.Find(p => p.profilename == oldprofilename);
         if (profile == null)
         {
-            Debug.Log("Profile not found.");
+            Debug.Log("[UserProfileManager] Profile not found.");
             return false;
         }
 
         if (newpin.Length != 4 || !int.TryParse(newpin, out _))
         {
-            Debug.Log("PIN must be a 4-digit number.");
+            Debug.Log("[UserProfileManager] PIN must be a 4-digit number.");
             return false;
         }
 
@@ -118,7 +135,7 @@ public class UserProfileManager
         profile.pin = newpin;
         profile.profilepicturepath = newprofilepicturepath;
 
-        Debug.Log($"Profile '{oldprofilename}' updated.");
+        Debug.Log($"[UserProfileManager] Profile '{oldprofilename}' updated.");
         saveProfiles();
         return true;
     }
@@ -127,7 +144,7 @@ public class UserProfileManager
     {
         if (selectedprofile == null)
         {
-            Debug.Log("No profile selected.");
+            Debug.Log("[UserProfileManager] No profile selected.");
             return false;
         }
 

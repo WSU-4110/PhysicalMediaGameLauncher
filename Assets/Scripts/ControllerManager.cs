@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
@@ -10,9 +11,9 @@ public class ControllerManager : MonoBehaviour
 
 
     // Actions
-    public UnityEvent<Vector2> analogStickMoved;
-    public UnityEvent confirmButtonPressed;
-    public UnityEvent revertButtonPressed;
+    public Action<Vector2> analogStickMoved;
+    public Action confirmButtonPressed;
+    public Action revertButtonPressed;
 
     void Awake()
     {
