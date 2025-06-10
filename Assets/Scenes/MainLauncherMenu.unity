@@ -6228,7 +6228,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1833626548}
         m_TargetAssemblyTypeName: UIApplicationSelectorManager, Assembly-CSharp
-        m_MethodName: OpenSettings
+        m_MethodName: Logout
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
