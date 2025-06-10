@@ -11,11 +11,17 @@ public class Game
     public string gameName;
     public string gamePath;
     public string gameDrive;
+    public string args;
     public bool isAvaliable;
 
     public string GetFullPath()
     {
         return Path.Join(gameDrive, gamePath);
+    }
+
+    public string GetArgs()
+    {
+        return args.Replace("$DRIVE$", gameDrive);
     }
 
     public string GetImagePath(bool hasToExist = true)

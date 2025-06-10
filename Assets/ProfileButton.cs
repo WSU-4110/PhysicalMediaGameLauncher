@@ -22,11 +22,13 @@ public class ProfileButton : MonoBehaviour
 
     public void Edit()
     {
-        Debug.Log($"{userProfile.profilename} wants to edit");
+        UserProfileManager.instance.selectProfile(userProfile.profilename);
+        UILauncherManager.instance.SwitchState(LauncherState.PROFILE_CREATE);
     }
 
     public void Delete()
     {
-        Debug.Log($"{userProfile.profilename} wants to delete");
+        UserProfileManager.instance.deleteProfile(userProfile.profilename);
+        UIProfileSelectorManager.instance.RefreshProfiles();
     }
 }

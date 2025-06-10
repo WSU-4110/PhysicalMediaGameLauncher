@@ -27,15 +27,28 @@ public class UIProfileSelectorManager : MonoBehaviour
 
     void OnEnable()
     {
+        RefreshProfiles();
+    }
+
+    public void RefreshProfiles()
+    {
         loginContainer.SetActive(false);
+        for (int i = profileButtons.transform.childCount - 1; i >= 0; i--) Destroy(profileButtons.transform.GetChild(i).gameObject);
         List<UserProfile> currentProfiles = UserProfileManager.instance.getAllProfiles();
+
+        if (currentProfiles.Count <= 0)
+        {
+            Debug.LogWarning($"[UIProfileSelectorManager::RefreshProfiles] No profiles to auto-select!");
+            UserProfileManager.instance.selectProfile(null);
+            UILauncherManager.instance.SwitchState(LauncherState.PROFILE_CREATE);
+            return;
+        }
 
         for (int i = 0; i < currentProfiles.Count; i++)
         {
             ProfileButton profileButton = Instantiate(profileButtonPrefab, profileButtons.transform).GetComponent<ProfileButton>();
             profileButton.Setup(currentProfiles[i]);
         }
-
         Button btn = profileButtons.transform.GetChild(0).GetChild(0).GetComponent<Button>();
         btn.Select();
     }

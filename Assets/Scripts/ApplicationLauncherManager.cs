@@ -86,11 +86,11 @@ public class ApplicationLauncherManager : MonoBehaviour
     /// </summary>
     /// <param name="exePath">Absolute path to the EXE or shortcut</param>
 
-    public void LaunchApplication(string appPath)
+    public void LaunchApplication(Game game)
     {
-        if (!File.Exists(appPath))
+        if (!File.Exists(game.GetFullPath()))
         {
-            UnityEngine.Debug.LogError($"File not found: {appPath}");
+            UnityEngine.Debug.LogError($"File not found: {game.GetFullPath()}");
             return;
         }
 
@@ -100,16 +100,17 @@ public class ApplicationLauncherManager : MonoBehaviour
     startInfo = new ProcessStartInfo
     {
         FileName = "open",
-        Arguments = $"\"{appPath}\"",
-        WorkingDirectory = Path.GetDirectoryName(appPath),
+        Arguments = $"\"{game.GetFullPath()}\" {game.GetArgs()}",
+        WorkingDirectory = Path.GetDirectoryName(game.GetFullPath()),
         UseShellExecute = false
     };
 #else
         startInfo = new ProcessStartInfo
         {
-            FileName = appPath,
+            FileName = game.GetFullPath(),
+            Arguments = game.GetArgs(),
             UseShellExecute = true,
-            WorkingDirectory = Path.GetDirectoryName(appPath),
+            WorkingDirectory = Path.GetDirectoryName(game.GetFullPath()),
             WindowStyle = ProcessWindowStyle.Maximized
         };
 #endif
@@ -117,7 +118,7 @@ public class ApplicationLauncherManager : MonoBehaviour
         try
         {
             currentProcess = Process.Start(startInfo);
-            UnityEngine.Debug.Log($"Launched: {appPath}");
+            UnityEngine.Debug.Log($"Launched: {game.GetFullPath()} {game.GetArgs()}");
 
             HideLauncherUI();
 

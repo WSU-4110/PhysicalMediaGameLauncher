@@ -37,6 +37,6 @@ public class ApplicationLaunchButton : MonoBehaviour
     {
         if (!applicationData.isAvaliable)
             return;
-        ApplicationLauncherManager.instance.LaunchApplication(applicationData.GetFullPath());
+        ApplicationLauncherManager.instance.LaunchApplication(applicationData);
     }
 }

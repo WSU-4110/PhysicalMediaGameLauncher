@@ -9,6 +9,11 @@ public class UserProfile
     public string profilename;
     public string pin;
     public string profilepicturepath;
+
+    public bool IsNull()
+    {
+        return (profilename == null && pin == null && profilepicturepath == null) || (profilename == "" && pin == "" && profilepicturepath == "");
+    }
 }
 
 [Serializable]
@@ -104,10 +109,17 @@ public class UserProfileManager : MonoBehaviour
 
     public bool selectProfile(string profilename)
     {
+        if (profilename == null)
+        {
+            selectedprofile = null;
+            return true;
+        }
+
         var profile = profiles.Find(p => p.profilename == profilename);
         if (profile == null)
         {
             Debug.Log("[UserProfileManager] Profile not found.");
+            selectedprofile = null;
             return false;
         }
 
@@ -158,6 +170,6 @@ public class UserProfileManager : MonoBehaviour
 
     public UserProfile getSelectedProfile()
     {
-        return selectedprofile;
+        return selectedprofile == null || selectedprofile.IsNull() ? null : selectedprofile;
     }
 }

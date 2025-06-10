@@ -9,6 +9,7 @@ class GameMetadata
     public string id;
     public string gameName;
     public string gamePath;
+    public string args;
 
     public Game convertToGame(string gameDrive)
     {
@@ -18,6 +19,7 @@ class GameMetadata
             gameName = this.gameName,
             gamePath = this.gamePath,
             gameDrive = gameDrive,
+            args = this.args,
             isAvaliable = true,
         };
     }

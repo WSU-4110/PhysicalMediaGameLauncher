@@ -40,4 +40,14 @@ public class UIApplicationSelectorManager : MonoBehaviour
         if (appIcons.transform.childCount > 0)
             appIcons.transform.GetChild(0).GetComponent<Button>().Select();
     }
+
+    public void OpenSettings()
+    {
+        UILauncherManager.instance.SwitchState(LauncherState.SETTINGS);
+    }
+
+    public void Logout()
+    {
+        UILauncherManager.instance.SwitchState(LauncherState.PROFILE_SELECT);
+    }
 }

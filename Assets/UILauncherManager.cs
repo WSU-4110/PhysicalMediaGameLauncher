@@ -25,7 +25,7 @@ public class UILauncherManager : MonoBehaviour
 {
     public static UILauncherManager instance { get; private set; } = null;
 
-    private LauncherState prevLauncherState = LauncherState.NONE;
+    public LauncherState prevLauncherState { get; private set; }  = LauncherState.NONE;
     private LauncherState lastLauncherState = LauncherState.NONE;
 
     private LauncherState _currentLauncherState = LauncherState.NONE;
@@ -119,6 +119,7 @@ public class UILauncherManager : MonoBehaviour
     {
         if (currentlyActivatedScreen != null)
             currentlyActivatedScreen.SetActive(false);
+        EventSystem.current.SetSelectedGameObject(null);
         destinationUI.SetActive(true);
         Debug.Log($"{(currentlyActivatedScreen != null ? $"{currentlyActivatedScreen.name} -> " : "")}{destinationUI.name}");
         currentlyActivatedScreen = destinationUI;
