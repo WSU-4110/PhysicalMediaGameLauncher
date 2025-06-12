@@ -19,20 +19,20 @@ public class Player : MonoBehaviour
     {
         if (!context.performed)
             return;
-        ControllerManager.instance.analogStickMoved.Invoke(context.ReadValue<Vector2>());
+        ControllerManager.instance.analogStickMoved?.Invoke(context.ReadValue<Vector2>());
     }
 
     public void ConfirmButtonClicked(InputAction.CallbackContext context)
     {
         if (!context.performed)
             return;
-        ControllerManager.instance.confirmButtonPressed.Invoke();
+        ControllerManager.instance.confirmButtonPressed?.Invoke();
     }
 
     public void RevertButtonClicked(InputAction.CallbackContext context)
     {
         if (!context.performed)
             return;
-        ControllerManager.instance.revertButtonPressed.Invoke();
+        ControllerManager.instance.revertButtonPressed?.Invoke();
     }
 }

@@ -11,6 +11,7 @@ public class Game
     public string gameName;
     public string gamePath;
     public string gameDrive;
+    public string args;
     public bool isAvaliable;
 
     public string GetFullPath()
@@ -18,11 +19,18 @@ public class Game
         return Path.Join(gameDrive, gamePath);
     }
 
+    public string GetArgs()
+    {
+        return args.Replace("$DRIVE$", gameDrive);
+    }
+
     public string GetImagePath(bool hasToExist = true)
     {
         string img = Path.Join(LibraryManager.libraryImagePreviews, $"{id}.png");
-        if(!File.Exists(img) && hasToExist)
+        if (!File.Exists(img) && hasToExist)
             img = Path.Join(LibraryManager.libraryImagePreviews, $"missing.png");
+        Debug.Log(LibraryManager.libraryImagePreviews);
+        Debug.Log(img);
         return img;
     }
 }
@@ -65,7 +73,7 @@ public class LibraryManager : MonoBehaviour
         catch (System.Exception e)
         {
             games = new SerializableDictionary<string, Game>();
-            Debug.LogError($"[LibraryManager] Error reading cache! Reason: {e.Message}");
+            Debug.LogWarning($"[LibraryManager] Error reading cache! Reason: {e.Message}");
         }
     }
 
@@ -92,6 +100,9 @@ public class LibraryManager : MonoBehaviour
             games[id] = game;
         else
             games.Add(id, game);
+
+        if (UILauncherManager.instance.currentLauncherState == LauncherState.APPLICATION_SELECT)
+            UIApplicationSelectorManager.instance.RefreshAppIcons();
     }
 
     public void RemoveGameFromLibrary(string id, bool softDelete = true)
@@ -100,6 +111,8 @@ public class LibraryManager : MonoBehaviour
             games[id].isAvaliable = false;
         else
             games.Remove(id);
+        if (UILauncherManager.instance.currentLauncherState == LauncherState.APPLICATION_SELECT)
+            UIApplicationSelectorManager.instance.RefreshAppIcons();
     }
 
 }

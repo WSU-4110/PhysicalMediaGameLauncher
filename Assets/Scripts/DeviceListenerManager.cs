@@ -9,8 +9,6 @@ public class DeviceListenerManager : MonoBehaviour
 {
     public static DeviceListenerManager instance { get; private set; } = null;
     private List<string> currentlyInsertedDrives = new List<string>();
-    private Dictionary<string, List<string>> driveToPaths = new Dictionary<string, List<string>>();
-
     public float interval = 2f;
 
     void Awake()
@@ -22,6 +20,10 @@ public class DeviceListenerManager : MonoBehaviour
         }
         instance = this;
         DontDestroyOnLoad(gameObject);
+    }
+
+    void Start()
+    {
         StartCoroutine(ScanForDevices());
     }
 
@@ -30,12 +32,14 @@ public class DeviceListenerManager : MonoBehaviour
     {
         // Fill the rest of this implementation when Physical Media Manager is ready
         Debug.Log($"Mounted {drive}");
+        PhysicalMediaManager.instance.ScanDriveForGames(drive);
     }
 
     public void UnmountedDrive(string drive)
     {
         // Fill the rest of this implementation when Physical Media Manager is ready
         Debug.Log($"Unmounted {drive}");
+        PhysicalMediaManager.instance.RemoveGamesFromDrive(drive);
     }
 
 
