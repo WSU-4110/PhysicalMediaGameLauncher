@@ -12,7 +12,8 @@ public class UserProfile
 
     public bool IsNull()
     {
-        return (profilename == null && pin == null && profilepicturepath == null) || (profilename == "" && pin == "" && profilepicturepath == "");
+        return (profilename == null && pin == null && profilepicturepath == null) || 
+               (profilename == "" && pin == "" && profilepicturepath == "");
     }
 }
 
@@ -75,12 +76,8 @@ public class UserProfileManager : MonoBehaviour
             return false;
         }
 
-        profiles.Add(new UserProfile
-        {
-            profilename = profilename,
-            pin = pin,
-            profilepicturepath = profilepicturepath
-        });
+        UserProfile newProfile = UserProfileFactory.Create(profilename, pin, profilepicturepath);
+        profiles.Add(newProfile);
 
         Debug.Log($"[UserProfileManager] Profile '{profilename}' created.");
         saveProfiles();
