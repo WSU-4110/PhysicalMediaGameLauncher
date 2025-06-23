@@ -50,7 +50,7 @@ public class LibraryManager : MonoBehaviour
             observers.Add(observer);
     }
 
-    public void UnregisteredObserver(LibraryObserver observer)
+    public void UnregisterObserver(LibraryObserver observer)
     {
         observers.Remove(observer);
     }
@@ -133,7 +133,7 @@ public class LibraryManager : MonoBehaviour
             games.Remove(id);
 
         NotifyObservers();
-        
+
         if (UILauncherManager.instance.currentLauncherState == LauncherState.APPLICATION_SELECT)
             UIApplicationSelectorManager.instance.RefreshAppIcons();
     }
