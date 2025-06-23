@@ -37,7 +37,7 @@ public class Game
 
 public class LibraryManager : MonoBehaviour
 {
-    public static LibraryManager instance { get; private set; } = null;
+    public static LibraryManager instance { get; private set; } = null; // Singleton Pattern
     private static string libraryCachePath = ""; // Needs to be initalized on Awake
     public static string libraryImagePreviews = ""; // Needs to be initalized on Awake
 

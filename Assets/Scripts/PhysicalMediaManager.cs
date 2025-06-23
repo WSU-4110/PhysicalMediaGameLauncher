@@ -35,7 +35,7 @@ class GameMetadataContainer
 
 public class PhysicalMediaManager : MonoBehaviour
 {
-    public static PhysicalMediaManager instance { get; private set; } = null;
+    public static PhysicalMediaManager instance { get; private set; } = null; // Singleton Pattern
     public const string DRIVE_GAME_METADATA_FILENAME = "gameData.json";
 
     public Dictionary<string, List<string>> driveToGameIDS = new Dictionary<string, List<string>>();

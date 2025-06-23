@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 public class DeviceListenerManager : MonoBehaviour
 {
-    public static DeviceListenerManager instance { get; private set; } = null;
+    public static DeviceListenerManager instance { get; private set; } = null; // Singleton Pattern
     private List<string> currentlyInsertedDrives = new List<string>();
     public float interval = 2f;
 

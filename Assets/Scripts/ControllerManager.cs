@@ -5,7 +5,7 @@ using UnityEngine.Events;
 
 public class ControllerManager : MonoBehaviour
 {
-    public static ControllerManager instance { get; private set; } = null;
+    public static ControllerManager instance { get; private set; } = null; // Singleton Pattern
 
     public List<Player> players = new List<Player>();
 
