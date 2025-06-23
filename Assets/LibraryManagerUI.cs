@@ -3,7 +3,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class LibraryManagerUI : MonoBehaviour
+public class LibraryManagerUI : MonoBehaviour, LibraryObserver
 {
     public static LibraryManagerUI instance { get; private set; } = null;
 
@@ -23,6 +23,17 @@ public class LibraryManagerUI : MonoBehaviour
     }
 
     void OnEnable()
+    {
+        LibraryManager.instance.RegisterObserver(this);
+        UpdateGameLibraryDisplay();
+    }
+
+    void OnDisable()
+    {
+        LibraryManager.instance.UnregisterObserver(this);
+    }
+
+    public void OnLibraryChanged()
     {
         UpdateGameLibraryDisplay();
     }
