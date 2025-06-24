@@ -1,12 +1,15 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System.IO;
 
 public class LoginUIController : MonoBehaviour
 {
     public TMP_InputField nameinput;
     public TMP_InputField pininput;
     public TMP_InputField pinverifyinput;
+    public TMP_InputField imagepathinput;
+
     public GameObject profilebuttonprefab;
     public Transform profilelistcontainer;
     public TextMeshProUGUI feedbacktext;
@@ -17,6 +20,7 @@ public class LoginUIController : MonoBehaviour
     public GameObject editpanel;
     public TMP_InputField editnameinput;
     public TMP_InputField editpininput;
+    public TMP_InputField editimagepathinput;
 
     private string currentlyeditingprofilename;
 
@@ -34,8 +38,9 @@ public class LoginUIController : MonoBehaviour
     {
         string name = nameinput.text;
         string pin = pininput.text;
+        string imagepath = imagepathinput.text;
 
-        if (profilemanager.createProfile(name, pin, "default"))
+        if (profilemanager.createProfile(name, pin, imagepath))
         {
             feedbacktext.text = "Profile created!";
             PopulateProfileButtons();
@@ -90,14 +95,21 @@ public class LoginUIController : MonoBehaviour
         editpanel.SetActive(true);
         editnameinput.text = profilename;
         editpininput.text = "";
+
+        UserProfile selected = profilemanager.getAllProfiles().Find(p => p.profilename == profilename);
+        if (selected != null)
+        {
+            editimagepathinput.text = selected.profilepicturepath;
+        }
     }
 
     public void OnConfirmEdit()
     {
         string newname = editnameinput.text;
         string newpin = editpininput.text;
+        string newimagepath = editimagepathinput.text;
 
-        if (profilemanager.editProfile(currentlyeditingprofilename, newname, newpin, "default"))
+        if (profilemanager.editProfile(currentlyeditingprofilename, newname, newpin, newimagepath))
         {
             feedbacktext.text = $"Profile updated to {newname}";
             editpanel.SetActive(false);
@@ -138,6 +150,15 @@ public class LoginUIController : MonoBehaviour
             if (editbutton != null)
             {
                 editbutton.onClick.AddListener(() => OnEditProfile(profile.profilename));
+            }
+
+            Image profileimg = btn.transform.Find("ProfileImage")?.GetComponent<Image>();
+            if (profileimg != null && File.Exists(profile.profilepicturepath))
+            {
+                byte[] bytes = File.ReadAllBytes(profile.profilepicturepath);
+                Texture2D texture = new Texture2D(2, 2);
+                texture.LoadImage(bytes);
+                profileimg.sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), Vector2.zero);
             }
         }
     }
