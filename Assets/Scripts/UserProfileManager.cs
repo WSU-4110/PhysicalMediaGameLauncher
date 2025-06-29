@@ -12,8 +12,9 @@ public class UserProfile
 
     public bool IsNull()
     {
-        return (profilename == null && pin == null && profilepicturepath == null) || 
-               (profilename == "" && pin == "" && profilepicturepath == "");
+        return string.IsNullOrWhiteSpace(profilename) &&
+               string.IsNullOrWhiteSpace(pin) &&
+               string.IsNullOrWhiteSpace(profilepicturepath);
     }
 }
 
@@ -26,6 +27,7 @@ public class ProfileListWrapper
 public class UserProfileManager : MonoBehaviour
 {
     public static UserProfileManager instance { get; private set; } = null;
+
     private List<UserProfile> profiles = new List<UserProfile>();
     private UserProfile selectedprofile = null;
 
@@ -56,57 +58,59 @@ public class UserProfileManager : MonoBehaviour
             string json = File.ReadAllText(savePath);
             this.profiles = JsonUtility.FromJson<ProfileListWrapper>(json).profiles;
         }
-        catch (System.Exception e)
+        catch (Exception e)
         {
             Debug.LogWarning($"[UserProfileManager] Could not load profiles from {savePath}! Reason: {e.Message}");
+            this.profiles = new List<UserProfile>();
         }
     }
 
     public bool createProfile(string profilename, string pin, string profilepicturepath)
     {
-        if (pin.Length != 4 || !int.TryParse(pin, out _))
-        {
-            Debug.Log("[UserProfileManager] PIN must be a 4-digit number.");
-            return false;
-        }
+        if (pin.Length != 4 || !int.TryParse(pin, out _)) return false;
 
-        if (profiles.Exists(p => p.profilename == profilename))
-        {
-            Debug.Log("[UserProfileManager] Profile name already exists.");
-            return false;
-        }
+        if (profiles.Exists(p => p.profilename == profilename)) return false;
 
         UserProfile newProfile = UserProfileFactory.Create(profilename, pin, profilepicturepath);
         profiles.Add(newProfile);
+        saveProfiles();
+        return true;
+    }
 
-        Debug.Log($"[UserProfileManager] Profile '{profilename}' created.");
+    public bool createProfileAtSlot(int slotindex, string profilename, string pin, string profilepicturepath)
+    {
+        if (pin.Length != 4 || !int.TryParse(pin, out _)) return false;
+        if (profiles.Exists(p => p.profilename == profilename)) return false;
+
+        while (profiles.Count <= slotindex)
+            profiles.Add(new UserProfile());
+
+        profiles[slotindex] = UserProfileFactory.Create(profilename, pin, profilepicturepath);
         saveProfiles();
         return true;
     }
 
     public bool deleteProfile(string profilename)
     {
-        var profile = profiles.Find(p => p.profilename == profilename);
-        if (profile == null)
+        for (int i = 0; i < profiles.Count; i++)
         {
-            Debug.Log("[UserProfileManager] Profile not found.");
-            return false;
+            if (profiles[i].profilename == profilename)
+            {
+                profiles[i] = new UserProfile();
+                if (selectedprofile != null && selectedprofile.profilename == profilename)
+                    selectedprofile = null;
+
+                saveProfiles();
+                return true;
+            }
         }
 
-        profiles.Remove(profile);
-        if (selectedprofile == profile)
-        {
-            selectedprofile = null;
-        }
-
-        Debug.Log($"[UserProfileManager] Profile '{profilename}' deleted.");
-        saveProfiles();
-        return true;
+        return false;
     }
 
     public bool selectProfile(string profilename)
     {
-        if (profilename == null)
+        if (string.IsNullOrEmpty(profilename))
         {
             selectedprofile = null;
             return true;
@@ -115,48 +119,30 @@ public class UserProfileManager : MonoBehaviour
         var profile = profiles.Find(p => p.profilename == profilename);
         if (profile == null)
         {
-            Debug.Log("[UserProfileManager] Profile not found.");
-            selectedprofile = null;
             return false;
         }
 
         selectedprofile = profile;
-        Debug.Log($"[UserProfileManager] Profile '{profilename}' selected.");
         return true;
     }
 
     public bool editProfile(string oldprofilename, string newprofilename, string newpin, string newprofilepicturepath)
     {
         var profile = profiles.Find(p => p.profilename == oldprofilename);
-        if (profile == null)
-        {
-            Debug.Log("[UserProfileManager] Profile not found.");
-            return false;
-        }
+        if (profile == null) return false;
 
-        if (newpin.Length != 4 || !int.TryParse(newpin, out _))
-        {
-            Debug.Log("[UserProfileManager] PIN must be a 4-digit number.");
-            return false;
-        }
+        if (newpin.Length != 4 || !int.TryParse(newpin, out _)) return false;
 
         profile.profilename = newprofilename;
         profile.pin = newpin;
         profile.profilepicturepath = newprofilepicturepath;
-
-        Debug.Log($"[UserProfileManager] Profile '{oldprofilename}' updated.");
         saveProfiles();
         return true;
     }
 
     public bool verifyPin(string inputPin)
     {
-        if (selectedprofile == null)
-        {
-            Debug.Log("[UserProfileManager] No profile selected.");
-            return false;
-        }
-
+        if (selectedprofile == null) return false;
         return selectedprofile.pin == inputPin;
     }
 
