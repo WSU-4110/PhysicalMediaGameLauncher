@@ -48,7 +48,6 @@ public class LibraryManagerUI : MonoBehaviour, LibraryObserver
         }
 
         ShowOrHideNoGamesMessage();
-        AutoSelectFirstGameIfAny();
     }
 
     private void ClearLibraryView()
@@ -72,11 +71,11 @@ public class LibraryManagerUI : MonoBehaviour, LibraryObserver
         noGamesMessage.gameObject.SetActive(appIcons.transform.childCount <= 0);
     }
 
-    private void AutoSelectFirstGameIfAny()
-    {
-        if (appIcons.transform.childCount > 0)
-        appIcons.transform.GetChild(0).GetComponent<Button>().Select();
-    }
+    //private void AutoSelectFirstGameIfAny()
+    //{
+    //    if (appIcons.transform.childCount > 0)
+    //    appIcons.transform.GetChild(0).GetComponent<Button>().Select();
+    //}
 
     public void OpenSettings()
     {
