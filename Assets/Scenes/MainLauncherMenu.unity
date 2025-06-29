@@ -5450,7 +5450,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1416747121}
   m_Layer: 5
-  m_Name: ApplicationSelectorContainer
+  m_Name: LibraryManagerContainer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6869,7 +6869,7 @@ GameObject:
   - component: {fileID: 1833626547}
   - component: {fileID: 1833626548}
   m_Layer: 5
-  m_Name: ApplicationSelector
+  m_Name: LibraryManagerSelector
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
