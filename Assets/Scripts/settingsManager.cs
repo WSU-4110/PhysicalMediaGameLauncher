@@ -1,6 +1,8 @@
 using UnityEngine;
 using System.IO; // Used to read/write files for saving settings
 
+
+
 // This class manages saving, loading, and accessing player settings (singleton pattern)
 public class SettingsManager : MonoBehaviour
 {
@@ -70,4 +72,15 @@ public class SettingsData
     public float masterVolume = 1.0f;       // Ranges from 0.0 to 1.0
     public bool isFullscreen = true;        // Toggle fullscreen on/off
     public string resolution = "1920x1080"; // Display resolution setting
+
+
+
+    // ── New Settings ───────────────────────────────────────────
+    public string language = "English";      // Language setting
+    public bool use24HourTime = false;       // 24-hour clock toggle
+    public string theme = "System Default";       // Light / Dark / System Default
+    public string startupBehavior = "Open last profile on launch";
+    public bool autoUpdate = true;                // Background updates
+    public bool telemetryEnabled = false;         // Telemetry opt-in
+    public bool crashReportsEnabled = false;      // Crash reporting opt-in
 }
