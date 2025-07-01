@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class ButtonHoverAnimator : MonoBehaviour, IPointerEnterHandler
+public class ButtonHoverAnimator : MonoBehaviour, ISelectHandler, IDeselectHandler
 {
     private Animator animator;
 
@@ -10,11 +10,19 @@ public class ButtonHoverAnimator : MonoBehaviour, IPointerEnterHandler
         animator = GetComponent<Animator>();
     }
 
-    public void OnPointerEnter(PointerEventData eventData)
+    public void OnSelect(BaseEventData eventData)
     {
         if (animator != null)
         {
-            animator.SetTrigger("Hover");
+            animator.SetBool("Hover", true);
+        }
+    }
+
+    public void OnDeselect(BaseEventData eventData)
+    {
+        if (animator != null)
+        {
+            animator.SetBool("Hover", false);
         }
     }
 }

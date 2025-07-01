@@ -1,3 +1,4 @@
+using DG.Tweening;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -32,12 +33,12 @@ public class NewProfileButton : MonoBehaviour, ISelectHandler, IDeselectHandler
     public void OnDeselect(BaseEventData eventData)
     {
         Debug.Log("Deselected!");
-        profileImageMaskBorder.color = Color.black;
+        profileImageMaskBorder.DOColor(Color.black, 0.25f);
     }
 
     public void OnSelect(BaseEventData eventData)
     {
         Debug.Log("Selected!");
-        profileImageMaskBorder.color = Color.red;
+        profileImageMaskBorder.DOColor(Color.red, 0.25f);
     }
 }

@@ -12,6 +12,7 @@ using UnityEditor;
 
 public class LoginUIController : MonoBehaviour
 {
+    public static LoginUIController instance { get; private set; } = null;
     public GameObject createprofilepanel;
     public TMP_InputField nameinput;
     public TMP_InputField pininput;
@@ -43,6 +44,11 @@ public class LoginUIController : MonoBehaviour
     private string profilebeingedited = "";
 
     private int last_selected_idx = -1;
+
+    void Awake()
+    {
+        if (instance == null) instance = this;
+    }
 
     void Start()
     {
@@ -147,6 +153,7 @@ public class LoginUIController : MonoBehaviour
             feedbacktext.text = "Profile created!";
             createprofilepanel.SetActive(false);
             PopulateProfileSlots();
+            EventSystem.current.SetSelectedGameObject(profileslots.GetChild(last_selected_idx != -1 ? last_selected_idx : 0).gameObject);
         }
         else
         {
@@ -202,6 +209,7 @@ public class LoginUIController : MonoBehaviour
         {
             feedbacktext.text = $"Deleted {pendingdeleteprofilename}";
             pinentrypanel.SetActive(false);
+            confirmdeletepanel.SetActive(false);
             PopulateProfileSlots();
             EventSystem.current.SetSelectedGameObject(profileslots.GetChild(last_selected_idx != -1 ? last_selected_idx : 0).gameObject);
             pendingdeleteprofilename = "";
@@ -269,5 +277,10 @@ public class LoginUIController : MonoBehaviour
     {
         editprofilepanel.SetActive(false);
         profilebeingedited = "";
+    }
+
+    public void Logout()
+    {
+        feedbacktext.text = "Successfully loggged out!";
     }
 }
