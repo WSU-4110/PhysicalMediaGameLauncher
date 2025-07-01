@@ -14,7 +14,6 @@ public enum LauncherState
     NONE,
     INIT,
     PROFILE_SELECT,
-    PROFILE_CREATE,
     APPLICATION_SELECT,
     SETTINGS,
     INGAME,
@@ -47,9 +46,6 @@ public class UILauncherManager : MonoBehaviour
                     case LauncherState.PROFILE_SELECT:
                         TransitionToScreen(profileSelectScreen);
                         break;
-                    case LauncherState.PROFILE_CREATE:
-                        TransitionToScreen(profileCreateScreen);
-                        break;
                     case LauncherState.APPLICATION_SELECT:
                         TransitionToScreen(applicationSelectScreen);
                         break;
@@ -73,7 +69,6 @@ public class UILauncherManager : MonoBehaviour
 
     public GameObject initScreen;
     public GameObject profileSelectScreen;
-    public GameObject profileCreateScreen;
     public GameObject applicationSelectScreen;
     public GameObject settingsScreen;
     public GameObject inGameScreen;
@@ -87,7 +82,6 @@ public class UILauncherManager : MonoBehaviour
                 _screens = new List<GameObject>{
                     initScreen,
                     profileSelectScreen,
-                    profileCreateScreen,
                     applicationSelectScreen,
                     settingsScreen,
                     inGameScreen

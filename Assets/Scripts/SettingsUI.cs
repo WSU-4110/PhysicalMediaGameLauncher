@@ -135,6 +135,7 @@ public class SettingsUI : MonoBehaviour
     public void SaveSettings()
     {
         SettingsManager.Instance.SaveSettings();
+        UISettingsScreenManager.GoBack();
     }
     void OnThemeChanged(int idx)
     {

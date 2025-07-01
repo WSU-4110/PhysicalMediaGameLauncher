@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using UnityEngine.AI;
 
 
 [Serializable]
@@ -121,8 +122,10 @@ public class LibraryManager : MonoBehaviour
 
         NotifyObservers();
 
-        if (UILauncherManager.instance.currentLauncherState == LauncherState.APPLICATION_SELECT)
+        if (UIApplicationSelectorManager.instance != null)
             UIApplicationSelectorManager.instance.RefreshAppIcons();
+        if (LibraryManagerUI.instance != null)
+            LibraryManagerUI.instance.UpdateGameLibraryDisplay();
     }
 
     public void RemoveGameFromLibrary(string id, bool softDelete = true)
