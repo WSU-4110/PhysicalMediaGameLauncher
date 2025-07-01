@@ -1,66 +1,170 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System.Collections.Generic;
+using System.IO;
+
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 public class LoginUIController : MonoBehaviour
 {
+    public GameObject createprofilepanel;
     public TMP_InputField nameinput;
     public TMP_InputField pininput;
-    public TMP_InputField pinverifyinput;
-    public GameObject profilebuttonprefab;
-    public Transform profilelistcontainer;
-    public TextMeshProUGUI feedbacktext;
+    public TextMeshProUGUI picturepathtext;
 
     public GameObject pinentrypanel;
     public TMP_Text pinlabel;
+    public TMP_InputField pinverifyinput;
 
-    public GameObject editpanel;
+    public GameObject confirmdeletepanel;
+    public TMP_Text confirmmessagetext;
+    public Button yesbutton;
+    public Button nobutton;
+
+    public GameObject editprofilepanel;
     public TMP_InputField editnameinput;
     public TMP_InputField editpininput;
+    public TextMeshProUGUI editpicturepathtext;
+    public Button editselectpicturebutton;
 
-    private string currentlyeditingprofilename;
+    public List<GameObject> profileslots = new List<GameObject>();
+    public TextMeshProUGUI feedbacktext;
 
-    private UserProfileManager profilemanager = new UserProfileManager();
+    private string selectedimagepath = "";
+    private string newselectedimagepath = "";
+    private int pendingcreateslotindex = -1;
+    private string pendingloginprofilename = "";
+    private string pendingdeleteprofilename = "";
+    private string profilebeingedited = "";
+
+    private UserProfileManager profilemanager;
 
     void Start()
     {
+        profilemanager = UserProfileManager.instance;
+        if (profilemanager == null) return;
+
         profilemanager.loadProfiles();
-        PopulateProfileButtons();
+        PopulateProfileSlots();
+        createprofilepanel.SetActive(false);
         pinentrypanel.SetActive(false);
-        editpanel.SetActive(false);
+        confirmdeletepanel.SetActive(false);
+        editprofilepanel.SetActive(false);
     }
 
-    public void OnCreateProfile()
+    public void PopulateProfileSlots()
     {
-        string name = nameinput.text;
-        string pin = pininput.text;
+        List<UserProfile> profiles = profilemanager.getAllProfiles();
 
-        if (profilemanager.createProfile(name, pin, "default"))
+        for (int i = 0; i < profileslots.Count; i++)
+        {
+            GameObject slot = profileslots[i];
+            TMP_Text label = slot.transform.Find("ProfileLabel")?.GetComponent<TMP_Text>();
+            TMP_Text plusTxt = slot.transform.Find("ProfileImageMask/PlusText")?.GetComponent<TMP_Text>();
+            Image img = slot.transform.Find("ProfileImageMask/ProfileImage")?.GetComponent<Image>();
+
+            if (i < profiles.Count && !profiles[i].IsNull())
+            {
+                UserProfile p = profiles[i];
+
+                if (label) { label.text = p.profilename; label.gameObject.SetActive(true); }
+                if (plusTxt) plusTxt.gameObject.SetActive(false);
+
+                if (img != null && !string.IsNullOrEmpty(p.profilepicturepath) && File.Exists(p.profilepicturepath))
+                {
+                    try
+                    {
+                        byte[] data = File.ReadAllBytes(p.profilepicturepath);
+                        Texture2D tex = new Texture2D(2, 2, TextureFormat.RGBA32, false);
+                        if (tex.LoadImage(data))
+                        {
+                            img.sprite = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), new Vector2(0.5f, 0.5f));
+                            img.color = Color.white;
+                        }
+                    }
+                    catch { }
+                }
+
+                int slotIdx = i;
+                slot.GetComponent<Button>().onClick.RemoveAllListeners();
+                slot.GetComponent<Button>().onClick.AddListener(() => OnProfileClicked(slotIdx));
+            }
+            else
+            {
+                if (label) label.gameObject.SetActive(false);
+                if (plusTxt) { plusTxt.text = "+"; plusTxt.gameObject.SetActive(true); }
+                if (img) { img.sprite = null; img.color = new Color(1, 1, 1, 0); }
+
+                int slotIdx = i;
+                slot.GetComponent<Button>().onClick.RemoveAllListeners();
+                slot.GetComponent<Button>().onClick.AddListener(() => OnAddProfileClicked(slotIdx));
+            }
+        }
+    }
+
+    public void OnAddProfileClicked(int slotindex)
+    {
+        pendingcreateslotindex = slotindex;
+        nameinput.text = "";
+        pininput.text = "";
+        picturepathtext.text = "No image selected";
+        selectedimagepath = "";
+        createprofilepanel.SetActive(true);
+    }
+
+    private void OnProfileClicked(int slotindex)
+    {
+        var profile = profilemanager.getAllProfiles()[slotindex];
+        pendingloginprofilename = profile.profilename;
+        pinlabel.text = $"Enter PIN for: {profile.profilename}";
+        pinverifyinput.text = "";
+        pinentrypanel.SetActive(true);
+    }
+
+    public void OnSelectPicture()
+    {
+#if UNITY_EDITOR
+        string path = EditorUtility.OpenFilePanel("Select Profile Picture", "", "png,jpg,jpeg");
+        if (!string.IsNullOrEmpty(path))
+        {
+            selectedimagepath = path;
+            picturepathtext.text = Path.GetFileName(path);
+        }
+        else
+        {
+            picturepathtext.text = "No image selected";
+        }
+#endif
+    }
+
+    public void OnConfirmCreate()
+    {
+        if (profilemanager.createProfileAtSlot(pendingcreateslotindex, nameinput.text, pininput.text, selectedimagepath))
         {
             feedbacktext.text = "Profile created!";
-            PopulateProfileButtons();
+            createprofilepanel.SetActive(false);
+            PopulateProfileSlots();
         }
         else
         {
             feedbacktext.text = "Failed to create profile.";
         }
+
+        pendingcreateslotindex = -1;
     }
 
-    public void OnProfileSelected(string profilename)
+    public void OnCancelCreate()
     {
-        if (profilemanager.selectProfile(profilename))
-        {
-            feedbacktext.text = $"Selected {profilename}";
-            pinentrypanel.SetActive(true);
-            pinlabel.text = $"Enter PIN for: {profilename}";
-        }
+        createprofilepanel.SetActive(false);
+        pendingcreateslotindex = -1;
     }
 
     public void OnPinSubmit()
     {
-        string inputpin = pinverifyinput.text;
-
-        if (profilemanager.verifyPin(inputpin))
+        if (profilemanager.selectProfile(pendingloginprofilename) && profilemanager.verifyPin(pinverifyinput.text))
         {
             feedbacktext.text = "Login successful!";
             pinentrypanel.SetActive(false);
@@ -71,74 +175,92 @@ public class LoginUIController : MonoBehaviour
         }
     }
 
-    public void OnDeleteProfile(string profilename)
+    public void OnCancelPin()
     {
-        if (profilemanager.deleteProfile(profilename))
+        pinentrypanel.SetActive(false);
+    }
+
+    public void OnDeleteProfile()
+    {
+        ShowConfirmDelete(pendingloginprofilename);
+    }
+
+    public void ShowConfirmDelete(string profilename)
+    {
+        pendingdeleteprofilename = profilename;
+        confirmmessagetext.text = $"Are you sure you want to delete '{profilename}'?";
+        confirmdeletepanel.SetActive(true);
+    }
+
+    public void OnConfirmDeleteYes()
+    {
+        if (profilemanager.deleteProfile(pendingdeleteprofilename))
         {
-            feedbacktext.text = $"Deleted {profilename}";
-            PopulateProfileButtons();
+            feedbacktext.text = $"Deleted {pendingdeleteprofilename}";
+            pinentrypanel.SetActive(false);
+            PopulateProfileSlots();
         }
         else
         {
-            feedbacktext.text = "Could not delete profile.";
+            feedbacktext.text = "Failed to delete profile.";
         }
+
+        confirmdeletepanel.SetActive(false);
+        pendingdeleteprofilename = "";
     }
 
-    public void OnEditProfile(string profilename)
+    public void OnConfirmDeleteNo()
     {
-        currentlyeditingprofilename = profilename;
-        editpanel.SetActive(true);
-        editnameinput.text = profilename;
-        editpininput.text = "";
+        confirmdeletepanel.SetActive(false);
+        pendingdeleteprofilename = "";
+    }
+
+    public void OnEditProfile()
+    {
+        UserProfile profile = profilemanager.getAllProfiles().Find(p => p.profilename == pendingloginprofilename);
+        if (profile == null) return;
+
+        profilebeingedited = profile.profilename;
+        editnameinput.text = profile.profilename;
+        editpininput.text = profile.pin;
+        editpicturepathtext.text = Path.GetFileName(profile.profilepicturepath);
+        newselectedimagepath = profile.profilepicturepath;
+
+        pinentrypanel.SetActive(false);
+        editprofilepanel.SetActive(true);
+    }
+
+    public void OnEditSelectPicture()
+    {
+#if UNITY_EDITOR
+        string path = EditorUtility.OpenFilePanel("Select New Profile Picture", "", "png,jpg,jpeg");
+        if (!string.IsNullOrEmpty(path))
+        {
+            newselectedimagepath = path;
+            editpicturepathtext.text = Path.GetFileName(path);
+        }
+#endif
     }
 
     public void OnConfirmEdit()
     {
-        string newname = editnameinput.text;
-        string newpin = editpininput.text;
-
-        if (profilemanager.editProfile(currentlyeditingprofilename, newname, newpin, "default"))
+        if (profilemanager.editProfile(profilebeingedited, editnameinput.text, editpininput.text, newselectedimagepath))
         {
-            feedbacktext.text = $"Profile updated to {newname}";
-            editpanel.SetActive(false);
-            PopulateProfileButtons();
+            feedbacktext.text = $"Updated profile {editnameinput.text}";
+            editprofilepanel.SetActive(false);
+            PopulateProfileSlots();
         }
         else
         {
             feedbacktext.text = "Failed to update profile.";
         }
+
+        profilebeingedited = "";
     }
 
     public void OnCancelEdit()
     {
-        editpanel.SetActive(false);
-    }
-
-    private void PopulateProfileButtons()
-    {
-        foreach (Transform child in profilelistcontainer)
-        {
-            Destroy(child.gameObject);
-        }
-
-        foreach (var profile in profilemanager.getAllProfiles())
-        {
-            GameObject btn = Instantiate(profilebuttonprefab, profilelistcontainer);
-            btn.GetComponentInChildren<TextMeshProUGUI>().text = profile.profilename;
-
-            btn.GetComponent<Button>().onClick.AddListener(() => OnProfileSelected(profile.profilename));
-
-            Button deletebutton = btn.transform.Find("DeleteButton")?.GetComponent<Button>();
-            if (deletebutton != null)
-            {
-                deletebutton.onClick.AddListener(() => OnDeleteProfile(profile.profilename));
-            }
-
-            Button editbutton = btn.transform.Find("EditButton")?.GetComponent<Button>();
-            if (editbutton != null)
-            {
-                editbutton.onClick.AddListener(() => OnEditProfile(profile.profilename));
-            }
-        }
+        editprofilepanel.SetActive(false);
+        profilebeingedited = "";
     }
 }
