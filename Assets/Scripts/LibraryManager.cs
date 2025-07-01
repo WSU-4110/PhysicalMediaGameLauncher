@@ -40,8 +40,26 @@ public class LibraryManager : MonoBehaviour
     public static LibraryManager instance { get; private set; } = null;
     private static string libraryCachePath = ""; // Needs to be initalized on Awake
     public static string libraryImagePreviews = ""; // Needs to be initalized on Awake
+    private List<LibraryObserver> observers = new List<LibraryObserver>();
 
     public SerializableDictionary<string, Game> games = null;
+
+    public void RegisterObserver(LibraryObserver observer)
+    {
+        if (!observers.Contains(observer))
+            observers.Add(observer);
+    }
+
+    public void UnregisterObserver(LibraryObserver observer)
+    {
+        observers.Remove(observer);
+    }
+
+    private void NotifyObservers()
+    {
+        foreach (var observer in observers)
+            observer.OnLibraryChanged();
+    }
 
     void Awake()
     {
@@ -101,6 +119,8 @@ public class LibraryManager : MonoBehaviour
         else
             games.Add(id, game);
 
+        NotifyObservers();
+
         if (UILauncherManager.instance.currentLauncherState == LauncherState.APPLICATION_SELECT)
             UIApplicationSelectorManager.instance.RefreshAppIcons();
     }
@@ -111,6 +131,9 @@ public class LibraryManager : MonoBehaviour
             games[id].isAvaliable = false;
         else
             games.Remove(id);
+
+        NotifyObservers();
+
         if (UILauncherManager.instance.currentLauncherState == LauncherState.APPLICATION_SELECT)
             UIApplicationSelectorManager.instance.RefreshAppIcons();
     }
