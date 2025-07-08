@@ -40,7 +40,7 @@ public class UIProfileSelectorManager : MonoBehaviour
         {
             Debug.LogWarning($"[UIProfileSelectorManager::RefreshProfiles] No profiles to auto-select!");
             UserProfileManager.instance.selectProfile(null);
-            UILauncherManager.instance.SwitchState(LauncherState.PROFILE_CREATE);
+            // UILauncherManager.instance.SwitchState(LauncherState.PROFILE_CREATE);
             return;
         }
 

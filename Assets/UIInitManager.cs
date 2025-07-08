@@ -50,7 +50,7 @@ public class UIInitManager : MonoBehaviour
         if (!initContanier.activeInHierarchy)
             return;
         initContanier.SetActive(false);
-        UILauncherManager.instance.SwitchState(LauncherState.PROFILE_CREATE);
+        UILauncherManager.instance.SwitchState(LauncherState.PROFILE_SELECT);
     }
 
 }

@@ -23,7 +23,7 @@ public class ProfileButton : MonoBehaviour
     public void Edit()
     {
         UserProfileManager.instance.selectProfile(userProfile.profilename);
-        UILauncherManager.instance.SwitchState(LauncherState.PROFILE_CREATE);
+        // UILauncherManager.instance.SwitchState(LauncherState.PROFILE_CREATE);
     }
 
     public void Delete()

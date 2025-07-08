@@ -1,6 +1,7 @@
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class LibraryManagerUI : MonoBehaviour, LibraryObserver
@@ -26,6 +27,8 @@ public class LibraryManagerUI : MonoBehaviour, LibraryObserver
     {
         LibraryManager.instance.RegisterObserver(this);
         UpdateGameLibraryDisplay();
+        if (appIcons.transform.childCount > 1) EventSystem.current.SetSelectedGameObject(appIcons.transform.GetChild(0).gameObject);
+        else EventSystem.current.SetSelectedGameObject(Object.FindAnyObjectByType<Button>(FindObjectsInactive.Exclude).gameObject);
     }
 
     void OnDisable()
@@ -84,6 +87,7 @@ public class LibraryManagerUI : MonoBehaviour, LibraryObserver
 
     public void Logout()
     {
+        if (LoginUIController.instance != null) LoginUIController.instance.Logout();
         UILauncherManager.instance.SwitchState(LauncherState.PROFILE_SELECT);
     }
 }
