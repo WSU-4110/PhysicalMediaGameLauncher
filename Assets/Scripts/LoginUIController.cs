@@ -136,7 +136,7 @@ public class LoginUIController : MonoBehaviour
     public void OnSelectPicture()
     {
         imageselectorpanel.SetActive(true);
-		EventSystem.current.SetSelectedGameObject(stockImageGrid.GetChild(0).gameObject);
+        stockImageGrid.GetChild(0).GetComponent<Button>().Select();
     }
 
     public void OnImageSelectedFromStock(Sprite sprite)
