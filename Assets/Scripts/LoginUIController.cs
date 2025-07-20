@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine.EventSystems;
 
-
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -13,10 +12,13 @@ using UnityEditor;
 public class LoginUIController : MonoBehaviour
 {
     public static LoginUIController instance { get; private set; } = null;
+
     public GameObject createprofilepanel;
     public TMP_InputField nameinput;
     public TMP_InputField pininput;
     public TextMeshProUGUI picturepathtext;
+	
+	public Transform stockImageGrid;
 
     public GameObject pinentrypanel;
     public TMP_Text pinlabel;
@@ -33,6 +35,7 @@ public class LoginUIController : MonoBehaviour
     public TextMeshProUGUI editpicturepathtext;
     public Button editselectpicturebutton;
 
+    public GameObject imageselectorpanel; // NEW
     public Transform profileslots;
     public TextMeshProUGUI feedbacktext;
 
@@ -42,7 +45,6 @@ public class LoginUIController : MonoBehaviour
     private string pendingloginprofilename = "";
     private string pendingdeleteprofilename = "";
     private string profilebeingedited = "";
-
     private int last_selected_idx = -1;
 
     void Awake()
@@ -57,6 +59,7 @@ public class LoginUIController : MonoBehaviour
         pinentrypanel.SetActive(false);
         confirmdeletepanel.SetActive(false);
         editprofilepanel.SetActive(false);
+        imageselectorpanel.SetActive(false); // NEW
         EventSystem.current.SetSelectedGameObject(profileslots.GetChild(0).gameObject);
     }
 
@@ -132,7 +135,23 @@ public class LoginUIController : MonoBehaviour
 
     public void OnSelectPicture()
     {
+        imageselectorpanel.SetActive(true);
+		EventSystem.current.SetSelectedGameObject(stockImageGrid.GetChild(0).gameObject);
+    }
+
+    public void OnImageSelectedFromStock(Sprite sprite)
+    {
+        Texture2D tex = sprite.texture;
+        byte[] data = tex.EncodeToPNG();
+        string tempPath = Path.Combine(Application.persistentDataPath, $"stock_{System.Guid.NewGuid()}.png");
+        File.WriteAllBytes(tempPath, data);
+        selectedimagepath = tempPath;
+        picturepathtext.text = Path.GetFileName(tempPath);
+    }
+
 #if UNITY_EDITOR
+    public void OnPickImageFromPC()
+    {
         string path = EditorUtility.OpenFilePanel("Select Profile Picture", "", "png,jpg,jpeg");
         if (!string.IsNullOrEmpty(path))
         {
@@ -143,8 +162,8 @@ public class LoginUIController : MonoBehaviour
         {
             picturepathtext.text = "No image selected";
         }
-#endif
     }
+#endif
 
     public void OnConfirmCreate()
     {
@@ -241,7 +260,6 @@ public class LoginUIController : MonoBehaviour
         pinentrypanel.SetActive(false);
         editprofilepanel.SetActive(true);
         editprofilepanel.transform.Find("EditNameInput").GetComponent<TMP_InputField>().ActivateInputField();
-
     }
 
     public void OnEditSelectPicture()
