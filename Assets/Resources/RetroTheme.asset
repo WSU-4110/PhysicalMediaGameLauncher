@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8b36ccba3d5f440c1a7f2a06b21bb1bf, type: 3}
+  m_Name: RetroTheme
+  m_EditorClassIdentifier: 
+  backgroundColor: {r: 0.28502136, g: 0.28502136, b: 0.5754717, a: 1}
+  primaryTextColor: {r: 0, g: 1, b: 0.96862745, a: 1}
+  secondaryTextColor: {r: 1, g: 0, b: 0.17609787, a: 0.9843137}
+  buttonColor: {r: 0, g: 0.7490196, b: 1, a: 1}
+  buttonHoverColor: {r: 0.9607843, g: 0, b: 0.8213978, a: 0.85490197}
+  primaryFont: {fileID: 11400000, guid: e4b55492b8c9b4101a7d31fae8a2dd46, type: 2}
+  backgroundImage: {fileID: 412388595617557365, guid: 1ee71dd2b546649878398b147ae89eb0, type: 3}
+  buttonSprite: {fileID: -7859831160649279358, guid: b27af0633d0f84c0d94470bd8f42bbd3, type: 3}
+  themeMusic: {fileID: 0}
