@@ -6,6 +6,8 @@ public class UIThemeManager : MonoBehaviour
 {
     public static UIThemeManager instance;
 
+    public GameObject mainContainer;
+
     [Header("Theme to Apply")]
     public UITheme currentTheme;
 
@@ -15,7 +17,8 @@ public class UIThemeManager : MonoBehaviour
     public Button[] buttons;
 
     [Header("Default Theme")]
-    private UITheme runtimeDefaultTheme; //adding default theme to drop down
+    public UITheme runtimeDefaultTheme; //adding default theme to drop down
+    public Material gradientMat;
 
     void Awake()
     {
@@ -29,8 +32,12 @@ public class UIThemeManager : MonoBehaviour
 
     void Start()
     {
+        gradientMat = background.material;
+        textElements = mainContainer.GetComponentsInChildren<TextMeshProUGUI>(true);
+        buttons = mainContainer.GetComponentsInChildren<Button>(true);
+
         // Build a default theme from the current UI state
-        runtimeDefaultTheme = ScriptableObject.CreateInstance<UITheme>();
+        runtimeDefaultTheme = new UITheme();
 
         if (background != null)
         {
@@ -71,14 +78,10 @@ public class UIThemeManager : MonoBehaviour
             // Re-enable gradient background material
             if (background != null)
             {
-                var launcherScript = background.GetComponent<UILauncherBackground>();
-                if (launcherScript != null)
-                {
-                    launcherScript.enabled = true;
-                    background.material = launcherScript.bgMaterial;
-                    background.overrideSprite = null;
-                    background.enabled = true;
-                }
+                background.material = gradientMat;
+                background.overrideSprite = null;
+                background.color = Color.white;
+                background.GetComponent<UILauncherBackground>().enabled = true;
             }
         }
         else

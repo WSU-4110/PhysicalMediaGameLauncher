@@ -124,7 +124,7 @@ public class LoginUIController : MonoBehaviour
         selectedimagepath = "";
         profilepictureimage.sprite = null;
         createprofilepanel.SetActive(true);
-        EventSystem.current.SetSelectedGameObject(selectpicturebutton.gameObject);
+        EventSystem.current.SetSelectedGameObject(nameinput.gameObject);
     }
 
     private void OnProfileClicked(int slotindex)

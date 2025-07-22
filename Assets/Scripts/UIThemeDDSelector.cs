@@ -17,12 +17,6 @@ public class UIThemeDropdownSelector : MonoBehaviour
 
         if (selectedTheme == "DefaultTheme")
         {
-            UIThemeManager.instance.ResetToDefaultTheme();
-            return;
-        }
-
-        if (selectedTheme == "DefaultTheme")
-        {
             Debug.Log("[Dropdown] Resetting to default theme");
             UIThemeManager.instance.ResetToDefaultTheme();
         }
@@ -33,7 +27,7 @@ public class UIThemeDropdownSelector : MonoBehaviour
             {
                 Debug.Log("[Theme] Loaded: " + theme.name);
                 UIThemeManager.instance.ApplyTheme(theme);
-            }
+            }   
             else
             {
                 Debug.LogWarning("[Theme] NOT FOUND: " + selectedTheme);
