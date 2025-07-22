@@ -2716,6 +2716,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 03dec85831cdf462daaf8e5dd13272fa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mainContainer: {fileID: 0}
   currentTheme: {fileID: 0}
   background: {fileID: 950754671}
   textElements:
@@ -2795,6 +2796,8 @@ MonoBehaviour:
   - {fileID: 1277832543}
   - {fileID: 1298764578}
   - {fileID: 1358106332}
+  runtimeDefaultTheme: {fileID: 0}
+  gradientMat: {fileID: 0}
 --- !u!4 &288581379
 Transform:
   m_ObjectHideFlags: 0
@@ -14143,7 +14146,8 @@ MonoBehaviour:
   nameinput: {fileID: 247778575}
   pininput: {fileID: 264448797}
   picturepathtext: {fileID: 2033553557}
-  stockImageGrid: {fileID: 0}
+  profilepictureimage: {fileID: 0}
+  selectpicturebutton: {fileID: 0}
   pinentrypanel: {fileID: 428063446}
   pinlabel: {fileID: 1693695514}
   pinverifyinput: {fileID: 975566674}
@@ -14155,8 +14159,10 @@ MonoBehaviour:
   editnameinput: {fileID: 1615316804}
   editpininput: {fileID: 1389569768}
   editpicturepathtext: {fileID: 10949069}
+  editprofilepictureimage: {fileID: 0}
   editselectpicturebutton: {fileID: 1257267073}
   imageselectorpanel: {fileID: 0}
+  stockimage1button: {fileID: 0}
   profileslots: {fileID: 447296013}
   feedbacktext: {fileID: 59240319}
 --- !u!1 &1770608176

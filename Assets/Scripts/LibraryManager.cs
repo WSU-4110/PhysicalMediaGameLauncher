@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using TMPro;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -70,7 +71,6 @@ public class LibraryManager : MonoBehaviour
             Destroy(gameObject);
             return;
         }
-
         libraryCachePath = Path.Join(Application.persistentDataPath, "library.json");
         libraryImagePreviews = Path.Join(Application.persistentDataPath, "library", "images");
 

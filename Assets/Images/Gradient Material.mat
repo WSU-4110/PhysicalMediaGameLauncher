@@ -38,14 +38,8 @@ Material:
     - _UIMaskSoftnessX: 1
     - _UIMaskSoftnessY: 1
     m_Colors:
-<<<<<<< HEAD
-    - _BottomColor: {r: 0.96134025, g: 0.47437704, b: 0.31635356, a: 1}
+    - _BottomColor: {r: 0.8964665, g: 0, b: 0.9326055, a: 1}
     - _ClipRect: {r: 0, g: 0, b: 0, a: 0}
-    - _TopColor: {r: 0, g: 0.8998752, b: 0.68277633, a: 1}
-=======
-    - _BottomColor: {r: 1, g: 0.05961522, b: 0.37008497, a: 1}
-    - _ClipRect: {r: 0, g: 0, b: 0, a: 0}
-    - _TopColor: {r: 0.1796021, g: 0.6767728, b: 0.43272987, a: 1}
->>>>>>> 58d9fb06615ca614c059cc0bf07c91a18903438b
+    - _TopColor: {r: 0, g: 0.87677765, b: 0.6285478, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
