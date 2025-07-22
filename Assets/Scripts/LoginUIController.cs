@@ -17,8 +17,8 @@ public class LoginUIController : MonoBehaviour
     public TMP_InputField nameinput;
     public TMP_InputField pininput;
     public TextMeshProUGUI picturepathtext;
-	
-	public Transform stockImageGrid;
+    public Image profilepictureimage;
+    public Button selectpicturebutton;
 
     public GameObject pinentrypanel;
     public TMP_Text pinlabel;
@@ -33,9 +33,12 @@ public class LoginUIController : MonoBehaviour
     public TMP_InputField editnameinput;
     public TMP_InputField editpininput;
     public TextMeshProUGUI editpicturepathtext;
+    public Image editprofilepictureimage;
     public Button editselectpicturebutton;
 
-    public GameObject imageselectorpanel; // NEW
+    public GameObject imageselectorpanel;
+    public Button stockimage1button;
+
     public Transform profileslots;
     public TextMeshProUGUI feedbacktext;
 
@@ -46,6 +49,8 @@ public class LoginUIController : MonoBehaviour
     private string pendingdeleteprofilename = "";
     private string profilebeingedited = "";
     private int last_selected_idx = -1;
+
+    private bool editing = false;
 
     void Awake()
     {
@@ -59,7 +64,7 @@ public class LoginUIController : MonoBehaviour
         pinentrypanel.SetActive(false);
         confirmdeletepanel.SetActive(false);
         editprofilepanel.SetActive(false);
-        imageselectorpanel.SetActive(false); // NEW
+        imageselectorpanel.SetActive(false);
         EventSystem.current.SetSelectedGameObject(profileslots.GetChild(0).gameObject);
     }
 
@@ -83,12 +88,10 @@ public class LoginUIController : MonoBehaviour
                     try
                     {
                         byte[] data = File.ReadAllBytes(p.profilepicturepath);
-                        Texture2D tex = new Texture2D(2, 2, TextureFormat.RGBA32, false);
-                        if (tex.LoadImage(data))
-                        {
-                            slot.profileImage.sprite = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), new Vector2(0.5f, 0.5f));
-                            slot.profileImage.color = Color.white;
-                        }
+                        Texture2D tex = new Texture2D(2, 2);
+                        tex.LoadImage(data);
+                        slot.profileImage.sprite = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), new Vector2(0.5f, 0.5f));
+                        slot.profileImage.color = Color.white;
                     }
                     catch { }
                 }
@@ -112,14 +115,16 @@ public class LoginUIController : MonoBehaviour
 
     public void OnAddProfileClicked(int slotindex)
     {
+        editing = false;
         last_selected_idx = slotindex;
         pendingcreateslotindex = slotindex;
         nameinput.text = "";
         pininput.text = "";
         picturepathtext.text = "No image selected";
         selectedimagepath = "";
+        profilepictureimage.sprite = null;
         createprofilepanel.SetActive(true);
-        createprofilepanel.transform.Find("NameInput").GetComponent<TMP_InputField>().ActivateInputField();
+        EventSystem.current.SetSelectedGameObject(selectpicturebutton.gameObject);
     }
 
     private void OnProfileClicked(int slotindex)
@@ -135,35 +140,84 @@ public class LoginUIController : MonoBehaviour
 
     public void OnSelectPicture()
     {
+        editing = false;
         imageselectorpanel.SetActive(true);
-        stockImageGrid.GetChild(0).GetComponent<Button>().Select();
+        EventSystem.current.SetSelectedGameObject(stockimage1button.gameObject);
     }
 
-    public void OnImageSelectedFromStock(Sprite sprite)
+    public void OnEditSelectPicture()
     {
-        Texture2D tex = sprite.texture;
-        byte[] data = tex.EncodeToPNG();
-        string tempPath = Path.Combine(Application.persistentDataPath, $"stock_{System.Guid.NewGuid()}.png");
-        File.WriteAllBytes(tempPath, data);
-        selectedimagepath = tempPath;
-        picturepathtext.text = Path.GetFileName(tempPath);
+        editing = true;
+        imageselectorpanel.SetActive(true);
+        EventSystem.current.SetSelectedGameObject(stockimage1button.gameObject);
     }
 
-#if UNITY_EDITOR
-    public void OnPickImageFromPC()
+    public void OnStockImageClicked(string imageName)
     {
-        string path = EditorUtility.OpenFilePanel("Select Profile Picture", "", "png,jpg,jpeg");
-        if (!string.IsNullOrEmpty(path))
+        Sprite sprite = Resources.Load<Sprite>("StockProfilePics/" + imageName);
+        if (sprite == null)
         {
-            selectedimagepath = path;
-            picturepathtext.text = Path.GetFileName(path);
+            feedbacktext.text = "Could not load image.";
+            return;
+        }
+
+        string imagePath = Application.dataPath + "/Resources/StockProfilePics/" + imageName + ".png";
+
+        if (!editing)
+        {
+            selectedimagepath = imagePath;
+            picturepathtext.text = imageName;
+            profilepictureimage.sprite = sprite;
+            profilepictureimage.color = Color.white;
+            createprofilepanel.SetActive(true);
+            imageselectorpanel.SetActive(false);
+            EventSystem.current.SetSelectedGameObject(selectpicturebutton.gameObject);
         }
         else
         {
-            picturepathtext.text = "No image selected";
+            newselectedimagepath = imagePath;
+            editpicturepathtext.text = imageName;
+            editprofilepictureimage.sprite = sprite;
+            editprofilepictureimage.color = Color.white;
+            editprofilepanel.SetActive(true);
+            imageselectorpanel.SetActive(false);
+            EventSystem.current.SetSelectedGameObject(editselectpicturebutton.gameObject);
         }
     }
+
+    public void OnPickFromPC()
+    {
+#if UNITY_EDITOR
+        string path = EditorUtility.OpenFilePanel("Select Profile Picture", "", "png,jpg,jpeg");
+        if (!string.IsNullOrEmpty(path))
+        {
+            Texture2D tex = new Texture2D(2, 2);
+            tex.LoadImage(File.ReadAllBytes(path));
+            Sprite sprite = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), new Vector2(0.5f, 0.5f));
+
+            if (!editing)
+            {
+                selectedimagepath = path;
+                picturepathtext.text = Path.GetFileName(path);
+                profilepictureimage.sprite = sprite;
+                profilepictureimage.color = Color.white;
+                createprofilepanel.SetActive(true);
+                imageselectorpanel.SetActive(false);
+                EventSystem.current.SetSelectedGameObject(selectpicturebutton.gameObject);
+            }
+            else
+            {
+                newselectedimagepath = path;
+                editpicturepathtext.text = Path.GetFileName(path);
+                editprofilepictureimage.sprite = sprite;
+                editprofilepictureimage.color = Color.white;
+                editprofilepanel.SetActive(true);
+                imageselectorpanel.SetActive(false);
+                EventSystem.current.SetSelectedGameObject(editselectpicturebutton.gameObject);
+            }
+        }
 #endif
+    }
 
     public void OnConfirmCreate()
     {
@@ -186,6 +240,7 @@ public class LoginUIController : MonoBehaviour
     {
         createprofilepanel.SetActive(false);
         pendingcreateslotindex = -1;
+        EventSystem.current.SetSelectedGameObject(profileslots.GetChild(0).gameObject);
     }
 
     public void OnPinSubmit()
@@ -205,7 +260,7 @@ public class LoginUIController : MonoBehaviour
     public void OnCancelPin()
     {
         pinentrypanel.SetActive(false);
-        EventSystem.current.SetSelectedGameObject(profileslots.GetChild(last_selected_idx != -1 ? last_selected_idx : 0).gameObject);
+        EventSystem.current.SetSelectedGameObject(profileslots.GetChild(0).gameObject);
     }
 
     public void OnDeleteProfile()
@@ -230,7 +285,7 @@ public class LoginUIController : MonoBehaviour
             pinentrypanel.SetActive(false);
             confirmdeletepanel.SetActive(false);
             PopulateProfileSlots();
-            EventSystem.current.SetSelectedGameObject(profileslots.GetChild(last_selected_idx != -1 ? last_selected_idx : 0).gameObject);
+            EventSystem.current.SetSelectedGameObject(profileslots.GetChild(0).gameObject);
             pendingdeleteprofilename = "";
         }
         else
@@ -242,7 +297,7 @@ public class LoginUIController : MonoBehaviour
     public void OnConfirmDeleteNo()
     {
         confirmdeletepanel.SetActive(false);
-        EventSystem.current.SetSelectedGameObject(profileslots.GetChild(last_selected_idx != -1 ? last_selected_idx : 0).gameObject);
+        EventSystem.current.SetSelectedGameObject(profileslots.GetChild(0).gameObject);
         pendingdeleteprofilename = "";
     }
 
@@ -255,23 +310,19 @@ public class LoginUIController : MonoBehaviour
         editnameinput.text = profile.profilename;
         editpininput.text = profile.pin;
         editpicturepathtext.text = Path.GetFileName(profile.profilepicturepath);
-        newselectedimagepath = profile.profilepicturepath;
 
+        if (!string.IsNullOrEmpty(profile.profilepicturepath) && File.Exists(profile.profilepicturepath))
+        {
+            Texture2D tex = new Texture2D(2, 2);
+            tex.LoadImage(File.ReadAllBytes(profile.profilepicturepath));
+            editprofilepictureimage.sprite = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), new Vector2(0.5f, 0.5f));
+            editprofilepictureimage.color = Color.white;
+        }
+
+        newselectedimagepath = profile.profilepicturepath;
         pinentrypanel.SetActive(false);
         editprofilepanel.SetActive(true);
         editprofilepanel.transform.Find("EditNameInput").GetComponent<TMP_InputField>().ActivateInputField();
-    }
-
-    public void OnEditSelectPicture()
-    {
-#if UNITY_EDITOR
-        string path = EditorUtility.OpenFilePanel("Select New Profile Picture", "", "png,jpg,jpeg");
-        if (!string.IsNullOrEmpty(path))
-        {
-            newselectedimagepath = path;
-            editpicturepathtext.text = Path.GetFileName(path);
-        }
-#endif
     }
 
     public void OnConfirmEdit()
@@ -281,7 +332,7 @@ public class LoginUIController : MonoBehaviour
             feedbacktext.text = $"Updated profile {editnameinput.text}";
             editprofilepanel.SetActive(false);
             PopulateProfileSlots();
-            EventSystem.current.SetSelectedGameObject(profileslots.GetChild(last_selected_idx != -1 ? last_selected_idx : 0).gameObject);
+            EventSystem.current.SetSelectedGameObject(profileslots.GetChild(0).gameObject);
         }
         else
         {
@@ -295,10 +346,17 @@ public class LoginUIController : MonoBehaviour
     {
         editprofilepanel.SetActive(false);
         profilebeingedited = "";
+        EventSystem.current.SetSelectedGameObject(profileslots.GetChild(0).gameObject);
+    }
+
+    public void OnCancelImageSelect()
+    {
+        imageselectorpanel.SetActive(false);
+        EventSystem.current.SetSelectedGameObject(profileslots.GetChild(0).gameObject);
     }
 
     public void Logout()
     {
-        feedbacktext.text = "Successfully loggged out!";
+        feedbacktext.text = "Successfully logged out!";
     }
 }
