@@ -136,6 +136,9 @@
             Array.from(document.querySelectorAll("#gamesTabs .active")).forEach(x => x.classList.remove("active"));
             elem.classList.add("active");
 
+            Array.from(document.querySelectorAll("#gameDataForm input")).forEach(x => x.value = "");
+            Array.from(document.querySelectorAll("#gameDataForm textarea")).forEach(x => x.value = "");
+
             id("gameDataForm").classList.remove("hide");
             Object.keys(games[selected_idx]).forEach(x => {
                 let elem = id(x);

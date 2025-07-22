@@ -4048,6 +4048,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c175cbd7ee0d91147bcfbce0a11fb175, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  selectedTextboxColor: {r: 0, g: 0, b: 0, a: 0}
   keyboard: {fileID: 57811713}
 --- !u!224 &671093752
 RectTransform:
@@ -6447,10 +6448,7 @@ MonoBehaviour:
     language: English
     use24HourTime: 0
     theme: System Default
-    startupBehavior: Open last profile on launch
-    autoUpdate: 1
-    telemetryEnabled: 0
-    crashReportsEnabled: 0
+    brightness: 1
 --- !u!4 &1199216018
 Transform:
   m_ObjectHideFlags: 0
@@ -10273,6 +10271,7 @@ MonoBehaviour:
   games:
     m_Keys: []
     m_Values: []
+  description: {fileID: 0}
 --- !u!4 &2040024317
 Transform:
   m_ObjectHideFlags: 0

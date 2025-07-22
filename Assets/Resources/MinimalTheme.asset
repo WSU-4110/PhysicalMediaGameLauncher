@@ -17,7 +17,7 @@ MonoBehaviour:
   secondaryTextColor: {r: 0.26666668, g: 0.26666668, b: 0.26666668, a: 1}
   buttonColor: {r: 0.8784314, g: 0.8784314, b: 0.8784314, a: 1}
   buttonHoverColor: {r: 0.7529412, g: 0.7529412, b: 0.7529412, a: 1}
-  primaryFont: {fileID: 0}
+  primaryFont: {fileID: 11400000, guid: 5d69e8aff3091ab45a8b9da7b87f7492, type: 2}
   backgroundImage: {fileID: -4080860342066340689, guid: 014159022c36f4840a8c6bbef4d4ace2, type: 3}
   buttonSprite: {fileID: 5098032421075988209, guid: b27af0633d0f84c0d94470bd8f42bbd3, type: 3}
   themeMusic: {fileID: 0}

@@ -31,6 +31,10 @@ public class ApplicationLaunchButton : MonoBehaviour
     void Update()
     {
         appName.gameObject.SetActive(EventSystem.current.currentSelectedGameObject == this.gameObject);
+        if (EventSystem.current.currentSelectedGameObject == this.gameObject)
+        {
+            LibraryManagerUI.instance.description.text = applicationData.gameDescription;
+        }
     }
 
     public void Launch()
