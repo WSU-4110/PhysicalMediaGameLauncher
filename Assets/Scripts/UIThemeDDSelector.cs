@@ -15,16 +15,29 @@ public class UIThemeDropdownSelector : MonoBehaviour
         string selectedTheme = dropdown.options[index].text;
         Debug.Log("[Dropdown] Selected: " + selectedTheme);
 
-        UITheme theme = Resources.Load<UITheme>(selectedTheme);
-        
-        if (theme != null)
+        if (selectedTheme == "DefaultTheme")
         {
-            Debug.Log("[Theme] Loaded: " + theme.name);
-            UIThemeManager.instance.ApplyTheme(theme);
+            UIThemeManager.instance.ResetToDefaultTheme();
+            return;
+        }
+
+        if (selectedTheme == "DefaultTheme")
+        {
+            Debug.Log("[Dropdown] Resetting to default theme");
+            UIThemeManager.instance.ResetToDefaultTheme();
         }
         else
         {
-            Debug.LogWarning("[Theme] NOT FOUND: " + selectedTheme);
+            UITheme theme = Resources.Load<UITheme>(selectedTheme);
+            if (theme != null)
+            {
+                Debug.Log("[Theme] Loaded: " + theme.name);
+                UIThemeManager.instance.ApplyTheme(theme);
+            }
+            else
+            {
+                Debug.LogWarning("[Theme] NOT FOUND: " + selectedTheme);
+            }
         }
     }
 }

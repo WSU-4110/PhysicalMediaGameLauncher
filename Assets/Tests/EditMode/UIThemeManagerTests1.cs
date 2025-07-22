@@ -92,6 +92,55 @@ public class UIThemeManagerTests1
         UIThemeManager.instance = null; 
     }
 
+    [Test]
+    public void ApplyTheme_NullTheme_DoesNothing()
+    {
+        var go = new GameObject("ThemeManager");
+        var manager = go.AddComponent<UIThemeManager>();
+
+        var mockImage = new GameObject("Background").AddComponent<Image>();
+        manager.background = mockImage;
+
+        manager.ApplyTheme(null);
+
+        Assert.AreEqual(Color.white, mockImage.color);
+    }
+
+
+    [Test]
+    public void ResetToDefaultTheme_SetsExpectedColors()
+    {
+        var managerGO = new GameObject("ThemeManager");
+        var manager = managerGO.AddComponent<UIThemeManager>();
+
+        var backgroundGO = new GameObject("Background");
+        var backgroundImage = backgroundGO.AddComponent<Image>();
+        manager.background = backgroundImage;
+
+        var textGO = new GameObject("Text");
+        var text = textGO.AddComponent<TextMeshProUGUI>();
+        manager.textElements = new[] { text };
+
+        var buttonGO = new GameObject("Button");
+        buttonGO.AddComponent<Image>(); 
+        var button = buttonGO.AddComponent<Button>();
+        manager.buttons = new[] { button };
+
+        var defaultTheme = ScriptableObject.CreateInstance<UITheme>();
+        defaultTheme.name = "MockDefault";
+        defaultTheme.backgroundColor = Color.black;
+        defaultTheme.primaryTextColor = Color.green;
+        defaultTheme.buttonColor = Color.red;
+
+        manager.SetRuntimeDefaultTheme(defaultTheme);
+
+        manager.ResetToDefaultTheme();
+
+        Assert.AreEqual(Color.black, manager.background.color);
+        Assert.AreEqual(Color.green, manager.textElements[0].color);
+        Assert.AreEqual(Color.red, manager.buttons[0].GetComponent<Image>().color);
+    }
+
     [TearDown]
     public void TearDown()
     {
