@@ -68,6 +68,12 @@ public class LoginUIController : MonoBehaviour
         EventSystem.current.SetSelectedGameObject(profileslots.GetChild(0).gameObject);
     }
 
+    void OnEnable()
+    {
+        profileslots.GetChild(0).GetComponent<Button>().Select();
+    }
+
+
     public void PopulateProfileSlots()
     {
         List<UserProfile> profiles = UserProfileManager.instance.getAllProfiles();
