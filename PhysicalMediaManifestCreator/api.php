@@ -69,4 +69,16 @@ function GetGameIcons()
     echo $response;
 }
 
+function GetDataURI(){
+    $url = $_GET["img"];
+    $ch = curl_init($url);
+    curl_setopt($ch, CURLOPT_HEADER, 0);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); 
+    $image = curl_exec($ch); 
+    curl_close($ch);
+    $finfo = finfo_open(FILEINFO_MIME_TYPE);
+    $data = base64_encode($image);
+    echo 'data:' . finfo_buffer($finfo, $image) . ';base64,' . $data;
+}
+
 $_GET["api"]();

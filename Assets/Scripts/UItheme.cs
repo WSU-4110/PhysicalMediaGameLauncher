@@ -1,8 +1,9 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System;
 
-[CreateAssetMenu(fileName = "UITheme", menuName = "UI Themes/New Theme")]
+[CreateAssetMenu(fileName = "UITheme", menuName = "UI Themes/New Theme"), Serializable]
 public class UITheme : ScriptableObject
 {
     [Header("General Colors")]
