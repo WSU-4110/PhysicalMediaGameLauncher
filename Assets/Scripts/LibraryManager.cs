@@ -13,6 +13,7 @@ public class Game
     public string gamePath;
     public string gameDrive;
     public string args;
+    public string gameDescription;
     public bool isAvaliable;
 
     public string GetFullPath()
