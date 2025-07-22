@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System.Collections.Generic;
+using UnityEngine.Rendering.PostProcessing;
 
 
 public class SettingsUI : MonoBehaviour
@@ -9,6 +10,11 @@ public class SettingsUI : MonoBehaviour
     // References to UI elements that will be assigned from the Inspector
     public Slider volumeSlider;
     public TMP_Text volumeValueText;
+    public Slider brightnessSlider;
+    public PostProcessProfile brightness;
+    public PostProcessLayer Layer;
+    AutoExposure exposure;
+    public TMP_Text brightnessValueText;
     public Toggle fullscreenToggle;
     public TMP_Dropdown resolutionDropdown; // Optional dropdown for screen resolutions
     public TMP_Dropdown languageDropdown;
@@ -22,11 +28,20 @@ public class SettingsUI : MonoBehaviour
 
     void Start()
     {
-        
+
         // Load current settings into UI elements
 
         volumeSlider.value = SettingsManager.Instance.settings.masterVolume;
         volumeValueText.text = Mathf.RoundToInt(volumeSlider.value * 100).ToString();
+
+        // Brightness slider
+        brightness.TryGetSettings(out exposure);
+
+
+        brightnessSlider.value = SettingsManager.Instance.settings.brightness;
+        brightnessValueText.text = "Brightness: " + Mathf.RoundToInt(brightnessSlider.value * 100) + "%";
+        brightnessSlider.onValueChanged.AddListener(OnBrightnessChanged);
+
         fullscreenToggle.isOn = SettingsManager.Instance.settings.isFullscreen;
 
         // Register listeners to handle changes in UI
@@ -37,16 +52,16 @@ public class SettingsUI : MonoBehaviour
         // Setup resolution dropdown if it exists
         if (resolutionDropdown != null)
         {
+            var resStrings = new List<string> { "640x480", "1280x720", "1920x1080", "2560x1440" };
             resolutionDropdown.ClearOptions();
-            var options = new System.Collections.Generic.List<TMP_Dropdown.OptionData>();
-            foreach (var res in Screen.resolutions)
-            {
-                string label = res.width + "x" + res.height;
-                options.Add(new TMP_Dropdown.OptionData(label));
-            }
-            resolutionDropdown.AddOptions(options);
+            resolutionDropdown.AddOptions(resStrings);
+            // Select saved resolution or default to 1080p
+            int savedRes = resStrings.FindIndex(s => s == SettingsManager.Instance.settings.resolution);
+            resolutionDropdown.value = savedRes >= 0 ? savedRes : 2;
+            resolutionDropdown.RefreshShownValue();
             resolutionDropdown.onValueChanged.AddListener(OnResolutionChanged);
         }
+
         // Set language options
         languageDropdown.ClearOptions();
         languageDropdown.AddOptions(new List<string> { "English", "Spanish", "Hindi", "French" });
@@ -68,29 +83,6 @@ public class SettingsUI : MonoBehaviour
         themeDropdown.value = themeIndex >= 0 ? themeIndex : 2;  // default to System Default
         themeDropdown.RefreshShownValue();
         themeDropdown.onValueChanged.AddListener(OnThemeChanged);
-
-        // ── Startup Behavior ────────────────────────────────────────
-        startupBehaviorDropdown.ClearOptions();
-        startupBehaviorDropdown.AddOptions(new List<string> {
-         "Launch on system startup",
-         "Open last profile on launch"
-        });
-        int sbIndex = startupBehaviorDropdown.options.FindIndex(o => o.text == SettingsManager.Instance.settings.startupBehavior);
-        startupBehaviorDropdown.value = sbIndex >= 0 ? sbIndex : 1;
-        startupBehaviorDropdown.RefreshShownValue();
-        startupBehaviorDropdown.onValueChanged.AddListener(OnStartupBehaviorChanged);
-
-        // ── Auto-Update Toggle ──────────────────────────────────────
-        autoUpdateToggle.isOn = SettingsManager.Instance.settings.autoUpdate;
-        autoUpdateToggle.onValueChanged.AddListener(OnAutoUpdateToggled);
-
-        // ── Telemetry Toggle ───────────────────────────────────────
-        telemetryToggle.isOn = SettingsManager.Instance.settings.telemetryEnabled;
-        telemetryToggle.onValueChanged.AddListener(OnTelemetryToggled);
-
-        // ── Crash Reports Toggle ───────────────────────────────────
-        crashReportToggle.isOn = SettingsManager.Instance.settings.crashReportsEnabled;
-        crashReportToggle.onValueChanged.AddListener(OnCrashReportsToggled);
     }
 
     // Called when the volume slider is changed
@@ -98,6 +90,19 @@ public class SettingsUI : MonoBehaviour
     {
         SettingsManager.Instance.settings.masterVolume = val;
         volumeValueText.text = Mathf.RoundToInt(val * 100).ToString();
+    }
+
+    // Called when the brightness slider is changed
+    void OnBrightnessChanged(float val)
+    {
+        SettingsManager.Instance.settings.brightness = val;
+        brightnessValueText.text = "Brightness: " + Mathf.RoundToInt(val * 100) + "%";
+        // Apply brightness to the game (e.g., mobile backlight):
+#if UNITY_IOS || UNITY_ANDROID
+        Screen.brightness = val;
+#endif
+        // Apply exposure based on slider (ensuring a small minimum)
+        exposure.keyValue.value = Mathf.Max(val, 0.05f);
     }
 
     // Called when the fullscreen toggle is changed
@@ -142,23 +147,4 @@ public class SettingsUI : MonoBehaviour
         SettingsManager.Instance.settings.theme = themeDropdown.options[idx].text;
     }
 
-    void OnStartupBehaviorChanged(int idx)
-    {
-        SettingsManager.Instance.settings.startupBehavior = startupBehaviorDropdown.options[idx].text;
-    }
-
-    void OnAutoUpdateToggled(bool on)
-    {
-        SettingsManager.Instance.settings.autoUpdate = on;
-    }
-
-    void OnTelemetryToggled(bool on)
-    {
-        SettingsManager.Instance.settings.telemetryEnabled = on;
-    }
-
-    void OnCrashReportsToggled(bool on)
-    {
-        SettingsManager.Instance.settings.crashReportsEnabled = on;
-    }
 }

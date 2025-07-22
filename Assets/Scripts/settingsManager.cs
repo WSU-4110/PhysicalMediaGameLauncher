@@ -79,8 +79,10 @@ public class SettingsData
     public string language = "English";      // Language setting
     public bool use24HourTime = false;       // 24-hour clock toggle
     public string theme = "System Default";       // Light / Dark / System Default
-    public string startupBehavior = "Open last profile on launch";
-    public bool autoUpdate = true;                // Background updates
-    public bool telemetryEnabled = false;         // Telemetry opt-in
-    public bool crashReportsEnabled = false;      // Crash reporting opt-in
+
+    public float brightness = 1.0f;          // Screen brightness (0.0 to 1.0)
+    //public string startupBehavior = "Open last profile on launch";
+    //public bool autoUpdate = true;                // Background updates
+    //public bool telemetryEnabled = false;         // Telemetry opt-in
+    //public bool crashReportsEnabled = false;      // Crash reporting opt-in
 }
