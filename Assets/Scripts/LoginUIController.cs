@@ -68,6 +68,12 @@ public class LoginUIController : MonoBehaviour
         EventSystem.current.SetSelectedGameObject(profileslots.GetChild(0).gameObject);
     }
 
+    void OnEnable()
+    {
+        profileslots.GetChild(0).GetComponent<Button>().Select();
+    }
+
+
     public void PopulateProfileSlots()
     {
         List<UserProfile> profiles = UserProfileManager.instance.getAllProfiles();
@@ -113,8 +119,7 @@ public class LoginUIController : MonoBehaviour
         }
     }
 
-    public void OnAddProfileClicked(int slotindex)
-{
+    public void OnAddProfileClicked(int slotindex) {
     editing = false;
     last_selected_idx = slotindex;
     pendingcreateslotindex = slotindex;
@@ -125,10 +130,16 @@ public class LoginUIController : MonoBehaviour
     if (picturepathtext != null) picturepathtext.text = "No image selected";
     if (selectpicturebutton != null) EventSystem.current.SetSelectedGameObject(selectpicturebutton.gameObject);
     if (profilepictureimage != null) profilepictureimage.sprite = null;
-#endif
-
+#else
+    nameinput.text = "";
+    pininput.text = "";
+    picturepathtext.text = "No image selected";
+    selectedimagepath = "";
+    profilepictureimage.sprite = null;
     createprofilepanel.SetActive(true);
-}
+    EventSystem.current.SetSelectedGameObject(nameinput.gameObject);
+#endif
+    }
 
     private void OnProfileClicked(int slotindex)
     {

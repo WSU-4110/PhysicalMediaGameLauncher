@@ -13,6 +13,9 @@ public class LibraryManagerUI : MonoBehaviour, LibraryObserver
 
     public TextMeshProUGUI noGamesMessage;
 
+
+    public TextMeshProUGUI description;
+
     void Awake()
     {
         if (instance != null)
