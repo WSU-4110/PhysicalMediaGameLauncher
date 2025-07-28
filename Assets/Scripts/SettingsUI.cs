@@ -79,13 +79,13 @@ public class SettingsUI : MonoBehaviour
         timeFormatToggle.isOn = SettingsManager.Instance.settings.use24HourTime;
         timeFormatToggle.onValueChanged.AddListener(OnTimeFormatToggled);
 
-        // ── Theme Selector ──────────────────────────────────────────
-        themeDropdown.ClearOptions();
-        themeDropdown.AddOptions(new List<string> { "Light", "Dark", "System Default" });
-        int themeIndex = themeDropdown.options.FindIndex(o => o.text == SettingsManager.Instance.settings.theme);
-        themeDropdown.value = themeIndex >= 0 ? themeIndex : 2;  // default to System Default
-        themeDropdown.RefreshShownValue();
-        themeDropdown.onValueChanged.AddListener(OnThemeChanged);
+        // // ── Theme Selector ──────────────────────────────────────────
+        // themeDropdown.ClearOptions();
+        // themeDropdown.AddOptions(new List<string> { "Light", "Dark", "System Default" });
+        // int themeIndex = themeDropdown.options.FindIndex(o => o.text == SettingsManager.Instance.settings.theme);
+        // themeDropdown.value = themeIndex >= 0 ? themeIndex : 2;  // default to System Default
+        // themeDropdown.RefreshShownValue();
+        // themeDropdown.onValueChanged.AddListener(OnThemeChanged);
     }
 
     // Called when the volume slider is changed
