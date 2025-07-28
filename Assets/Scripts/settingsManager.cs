@@ -1,5 +1,6 @@
 using UnityEngine;
-using System.IO; // Used to read/write files for saving settings
+using System.IO;
+using System; // Used to read/write files for saving settings
 
 
 
@@ -12,55 +13,51 @@ public class SettingsManager : MonoBehaviour
     // Stores all the actual setting values
     public SettingsData settings;
 
-    // File path where the settings JSON will be saved
-    private string settingsPath;
-
     // Called when the script is first loaded (before Start)
     void Awake()
     {
+#if !UNITY_EDITOR
         // Ensure only one SettingsManager exists
         if (Instance == null)
         {
             Instance = this;
             DontDestroyOnLoad(gameObject); // Keep this object alive between scene changes
-
-            // Define the file path for saving the settings JSON file
-            settingsPath = Application.persistentDataPath + "/settings.json";
-
-            // Try loading saved settings from file
-            LoadSettings();
         }
         else
         {
             // Destroy duplicate SettingsManager if it already exists
             Destroy(gameObject);
         }
+#endif
+
+        // Try loading saved settings from file
+        LoadSettings();
     }
 
     // Saves current settings to a JSON file
-    public void SaveSettings()
+    public static void SaveSettings(SettingsData settingsData)
     {
         // Convert settings object to JSON string
-        string json = JsonUtility.ToJson(settings, true);
+        string json = JsonUtility.ToJson(settingsData, true);
 
         // Write JSON to file at settingsPath
-        File.WriteAllText(settingsPath, json);
+        File.WriteAllText(Application.persistentDataPath + "/settings.json", json);
     }
 
     // Loads settings from the JSON file if it exists
     public void LoadSettings()
     {
         // If settings file exists, load and parse it
-        if (File.Exists(settingsPath))
+        if (File.Exists(Application.persistentDataPath + "/settings.json"))
         {
-            string json = File.ReadAllText(settingsPath);
+            string json = File.ReadAllText(Application.persistentDataPath + "/settings.json");
             settings = JsonUtility.FromJson<SettingsData>(json);
         }
         else
         {
             // If no file found, create default settings and save them
             settings = new SettingsData();
-            SaveSettings(); // Save defaults immediately
+            SaveSettings(settings); // Save defaults immediately
         }
     }
 }

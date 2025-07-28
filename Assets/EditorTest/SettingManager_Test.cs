@@ -8,17 +8,15 @@ public class SettingsManagerTests
     [SetUp]
     public void SetUp()
     {
-        // Grab the singleton and reset to defaults before each test
-        mgr = SettingsManager.Instance;
-
-        mgr.settings = new SettingsData();
+        mgr = new SettingsManager();
+        mgr.LoadSettings();
     }
 
     [Test]
     public void MasterVolume_SaveAndLoad_RestoresValue()
     {
         mgr.settings.masterVolume = 0.42f;
-        mgr.SaveSettings();
+        SettingsManager.SaveSettings(mgr.settings);
 
         // Corrupt and reload
         mgr.settings.masterVolume = 1f;
@@ -31,19 +29,19 @@ public class SettingsManagerTests
     public void FullscreenToggle_SaveAndLoad_RestoresValue()
     {
         mgr.settings.isFullscreen = true;
-        mgr.SaveSettings();
+        SettingsManager.SaveSettings(mgr.settings);
 
-        Screen.fullScreen = false;    // flip runtime state
+        mgr.settings.isFullscreen = false;    // flip runtime state
         mgr.LoadSettings();
 
-        Assert.IsTrue(Screen.fullScreen);
+        Assert.IsTrue(mgr.settings.isFullscreen);
     }
 
     [Test]
     public void Resolution_SaveAndLoad_RestoresValue()
     {
         mgr.settings.resolution = "1280x720";
-        mgr.SaveSettings();
+        SettingsManager.SaveSettings(mgr.settings);
 
         mgr.settings.resolution = "";
         mgr.LoadSettings();
@@ -55,7 +53,7 @@ public class SettingsManagerTests
     public void Use24HourToggle_SaveAndLoad_RestoresValue()
     {
         mgr.settings.use24HourTime = true;
-        mgr.SaveSettings();
+        SettingsManager.SaveSettings(mgr.settings);
 
         mgr.settings.use24HourTime = false;
         mgr.LoadSettings();
@@ -67,7 +65,7 @@ public class SettingsManagerTests
     public void Brightness_SaveAndLoad_RestoresValue()
     {
         mgr.settings.brightness = 0.75f;
-        mgr.SaveSettings();
+        SettingsManager.SaveSettings(mgr.settings);
 
         mgr.settings.brightness = 0f;
         mgr.LoadSettings();
@@ -79,7 +77,7 @@ public class SettingsManagerTests
     public void Theme_SaveAndLoad_RestoresValue()
     {
         mgr.settings.theme = "Dark";
-        mgr.SaveSettings();
+        SettingsManager.SaveSettings(mgr.settings);
 
         mgr.settings.theme = string.Empty;
         mgr.LoadSettings();

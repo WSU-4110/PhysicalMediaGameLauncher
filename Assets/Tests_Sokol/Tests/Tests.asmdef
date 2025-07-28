@@ -3,8 +3,7 @@
     "rootNamespace": "",
     "references": [
         "UnityEngine.TestRunner",
-        "UnityEditor.TestRunner",
-        "Scripts_Sokol"
+        "GameCode"
     ],
     "includePlatforms": [
         "Editor"

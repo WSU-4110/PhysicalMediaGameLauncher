@@ -142,7 +142,7 @@ public class SettingsUI : MonoBehaviour
     // Save current settings to disk
     public void SaveSettings()
     {
-        SettingsManager.Instance.SaveSettings();
+        SettingsManager.SaveSettings(SettingsManager.Instance.settings);
         UISettingsScreenManager.GoBack();
     }
     void OnThemeChanged(int idx)
