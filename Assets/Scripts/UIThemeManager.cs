@@ -6,6 +6,8 @@ public class UIThemeManager : MonoBehaviour
 {
     public static UIThemeManager instance;
 
+    public GameObject mainContainer;
+
     [Header("Theme to Apply")]
     public UITheme currentTheme;
 
@@ -93,7 +95,6 @@ public class UIThemeManager : MonoBehaviour
             Debug.LogWarning("[Theme] No runtime default theme stored!");
         }
     }
-
 
     public void ApplyTheme(UITheme theme)
     {

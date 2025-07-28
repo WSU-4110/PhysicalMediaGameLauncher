@@ -20,12 +20,6 @@ public class UIThemeDropdownSelector : MonoBehaviour
             UIThemeManager.instance.ResetToDefaultTheme();
             return;
         }
-
-        if (selectedTheme == "DefaultTheme")
-        {
-            Debug.Log("[Dropdown] Resetting to default theme");
-            UIThemeManager.instance.ResetToDefaultTheme();
-        }
         else
         {
             UITheme theme = Resources.Load<UITheme>(selectedTheme);
