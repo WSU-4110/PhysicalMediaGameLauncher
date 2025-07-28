@@ -17,8 +17,14 @@ public class UIThemeManager : MonoBehaviour
     public Button[] buttons;
 
     [Header("Default Theme")]
-    public UITheme runtimeDefaultTheme; //adding default theme to drop down
-    public Material gradientMat;
+    private UITheme runtimeDefaultTheme; //adding default theme to drop down
+
+    #if UNITY_EDITOR
+    public void SetRuntimeDefaultTheme(UITheme theme)
+    {
+        runtimeDefaultTheme = theme;
+    }
+    #endif
 
     void Awake()
     {
@@ -32,12 +38,8 @@ public class UIThemeManager : MonoBehaviour
 
     void Start()
     {
-        gradientMat = background.material;
-        textElements = mainContainer.GetComponentsInChildren<TextMeshProUGUI>(true);
-        buttons = mainContainer.GetComponentsInChildren<Button>(true);
-
         // Build a default theme from the current UI state
-        runtimeDefaultTheme = new UITheme();
+        runtimeDefaultTheme = ScriptableObject.CreateInstance<UITheme>();
 
         if (background != null)
         {
@@ -78,10 +80,14 @@ public class UIThemeManager : MonoBehaviour
             // Re-enable gradient background material
             if (background != null)
             {
-                background.material = gradientMat;
-                background.overrideSprite = null;
-                background.color = Color.white;
-                background.GetComponent<UILauncherBackground>().enabled = true;
+                var launcherScript = background.GetComponent<UILauncherBackground>();
+                if (launcherScript != null)
+                {
+                    launcherScript.enabled = true;
+                    background.material = launcherScript.bgMaterial;
+                    background.overrideSprite = null;
+                    background.enabled = true;
+                }
             }
         }
         else
@@ -89,7 +95,6 @@ public class UIThemeManager : MonoBehaviour
             Debug.LogWarning("[Theme] No runtime default theme stored!");
         }
     }
-
 
     public void ApplyTheme(UITheme theme)
     {

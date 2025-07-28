@@ -119,18 +119,26 @@ public class LoginUIController : MonoBehaviour
         }
     }
 
-    public void OnAddProfileClicked(int slotindex)
-    {
-        editing = false;
-        last_selected_idx = slotindex;
-        pendingcreateslotindex = slotindex;
-        nameinput.text = "";
-        pininput.text = "";
-        picturepathtext.text = "No image selected";
-        selectedimagepath = "";
-        profilepictureimage.sprite = null;
-        createprofilepanel.SetActive(true);
-        EventSystem.current.SetSelectedGameObject(nameinput.gameObject);
+    public void OnAddProfileClicked(int slotindex) {
+    editing = false;
+    last_selected_idx = slotindex;
+    pendingcreateslotindex = slotindex;
+
+#if UNITY_EDITOR
+    if (nameinput != null) nameinput.text = "";
+    if (pininput != null) pininput.text = "";
+    if (picturepathtext != null) picturepathtext.text = "No image selected";
+    if (selectpicturebutton != null) EventSystem.current.SetSelectedGameObject(selectpicturebutton.gameObject);
+    if (profilepictureimage != null) profilepictureimage.sprite = null;
+#else
+    nameinput.text = "";
+    pininput.text = "";
+    picturepathtext.text = "No image selected";
+    selectedimagepath = "";
+    profilepictureimage.sprite = null;
+    createprofilepanel.SetActive(true);
+    EventSystem.current.SetSelectedGameObject(nameinput.gameObject);
+#endif
     }
 
     private void OnProfileClicked(int slotindex)
@@ -243,11 +251,14 @@ public class LoginUIController : MonoBehaviour
     }
 
     public void OnCancelCreate()
-    {
-        createprofilepanel.SetActive(false);
-        pendingcreateslotindex = -1;
-        EventSystem.current.SetSelectedGameObject(profileslots.GetChild(0).gameObject);
-    }
+	{
+		createprofilepanel.SetActive(false);
+		pendingcreateslotindex = -1;
+
+	#if !UNITY_EDITOR
+		EventSystem.current.SetSelectedGameObject(profileslots.GetChild(0).gameObject);
+	#endif
+	}
 
     public void OnPinSubmit()
     {
@@ -264,10 +275,13 @@ public class LoginUIController : MonoBehaviour
     }
 
     public void OnCancelPin()
-    {
-        pinentrypanel.SetActive(false);
-        EventSystem.current.SetSelectedGameObject(profileslots.GetChild(0).gameObject);
-    }
+	{
+		pinentrypanel.SetActive(false);
+
+	#if !UNITY_EDITOR
+		EventSystem.current.SetSelectedGameObject(profileslots.GetChild(last_selected_idx != -1 ? last_selected_idx : 0).gameObject);
+	#endif
+	}
 
     public void OnDeleteProfile()
     {
@@ -275,13 +289,16 @@ public class LoginUIController : MonoBehaviour
     }
 
     public void ShowConfirmDelete(string profilename)
-    {
-        pendingdeleteprofilename = profilename;
-        confirmmessagetext.text = $"Are you sure you want to delete '{profilename}'?";
-        pinentrypanel.SetActive(false);
-        confirmdeletepanel.SetActive(true);
-        EventSystem.current.SetSelectedGameObject(confirmdeletepanel.transform.Find("NoButton").gameObject);
-    }
+	{
+		pendingdeleteprofilename = profilename;
+		confirmmessagetext.text = $"Are you sure you want to delete '{profilename}'?";
+		pinentrypanel.SetActive(false);
+		confirmdeletepanel.SetActive(true);
+
+	#if !UNITY_EDITOR
+		EventSystem.current.SetSelectedGameObject(confirmdeletepanel.transform.Find("NoButton").gameObject);
+	#endif
+	}
 
     public void OnConfirmDeleteYes()
     {
@@ -301,11 +318,15 @@ public class LoginUIController : MonoBehaviour
     }
 
     public void OnConfirmDeleteNo()
-    {
-        confirmdeletepanel.SetActive(false);
-        EventSystem.current.SetSelectedGameObject(profileslots.GetChild(0).gameObject);
-        pendingdeleteprofilename = "";
-    }
+	{
+		confirmdeletepanel.SetActive(false);
+
+	#if !UNITY_EDITOR
+		EventSystem.current.SetSelectedGameObject(profileslots.GetChild(last_selected_idx != -1 ? last_selected_idx : 0).gameObject);
+	#endif
+
+		pendingdeleteprofilename = "";
+	}
 
     public void OnEditProfile()
     {
@@ -349,17 +370,23 @@ public class LoginUIController : MonoBehaviour
     }
 
     public void OnCancelEdit()
-    {
-        editprofilepanel.SetActive(false);
-        profilebeingedited = "";
-        EventSystem.current.SetSelectedGameObject(profileslots.GetChild(0).gameObject);
-    }
+	{
+		editprofilepanel.SetActive(false);
+		profilebeingedited = "";
+
+	#if !UNITY_EDITOR
+		EventSystem.current.SetSelectedGameObject(profileslots.GetChild(0).gameObject);
+	#endif
+	}
 
     public void OnCancelImageSelect()
-    {
-        imageselectorpanel.SetActive(false);
-        EventSystem.current.SetSelectedGameObject(profileslots.GetChild(0).gameObject);
-    }
+	{
+		imageselectorpanel.SetActive(false);
+
+	#if !UNITY_INCLUDE_TESTS
+		EventSystem.current.SetSelectedGameObject(profileslots.GetChild(0).gameObject);
+	#endif
+	}
 
     public void Logout()
     {

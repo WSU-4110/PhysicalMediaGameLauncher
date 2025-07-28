@@ -536,8 +536,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c175cbd7ee0d91147bcfbce0a11fb175, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  selectedTextboxColor: {r: 0, g: 1, b: 0.5550182, a: 1}
+  inputField: {fileID: 0}
+  originalTMPColor:
+    r: 0
+    g: 0
+    b: 0
+    a: 0
+  selectedTextboxColor:
+    r: 0
+    g: 1
+    b: 0.5550182
+    a: 1
   keyboard: {fileID: 307692971}
+  btns: []
 --- !u!1 &45893198
 GameObject:
   m_ObjectHideFlags: 0
@@ -3766,7 +3777,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 03dec85831cdf462daaf8e5dd13272fa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mainContainer: {fileID: 952187062}
   currentTheme: {fileID: 0}
   background: {fileID: 950754671}
   textElements:
@@ -3845,8 +3855,6 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 1298764578}
-  runtimeDefaultTheme: {fileID: 0}
-  gradientMat: {fileID: 0}
 --- !u!4 &288581379
 Transform:
   m_ObjectHideFlags: 0
@@ -4739,7 +4747,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   volumeTrigger: {fileID: 373303811}
   volumeLayer:
-    serializedVersion: 2
     m_Bits: 8
   stopNaNPropagation: 1
   finalBlitToCameraTarget: 0
@@ -4749,6 +4756,9 @@ MonoBehaviour:
     sharpness: 0.25
     stationaryBlending: 0.95
     motionBlending: 0.85
+    <jitter>k__BackingField: {x: 0, y: 0}
+    m_ResetHistory: 1
+    <sampleIndex>k__BackingField: 0
   subpixelMorphologicalAntialiasing:
     quality: 2
   fastApproximateAntialiasing:
@@ -4757,21 +4767,18 @@ MonoBehaviour:
   fog:
     enabled: 1
     excludeSkybox: 1
+  dithering:
+    m_NoiseTextureIndex: 10
   debugLayer:
-    lightMeter:
-      width: 512
-      height: 256
-      showCurves: 1
-    histogram:
-      width: 512
-      height: 256
-      channel: 3
-    waveform:
-      exposure: 0.12
-      height: 256
-    vectorscope:
-      size: 256
-      exposure: 0.12
+    lightMeter: {<output>k__BackingField: {fileID: 0}, requested: 0, width: 512, height: 256, showCurves: 1}
+    histogram: {<output>k__BackingField: {fileID: 0}, requested: 0, width: 512, height: 256, channel: 3}
+    waveform: {<output>k__BackingField: {fileID: 0}, requested: 0, exposure: 0.12, height: 256}
+    vectorscope: {<output>k__BackingField: {fileID: 0}, requested: 0, size: 256, exposure: 0.12}
+    frameWidth: 1920
+    frameHeight: 1080
+    <debugOverlayTarget>k__BackingField: {fileID: 0}
+    <debugOverlayActive>k__BackingField: 0
+    <debugOverlay>k__BackingField: 0
     overlaySettings:
       linearDepth: 0
       motionColorIntensity: 4
@@ -4785,6 +4792,12 @@ MonoBehaviour:
   m_BeforeTransparentBundles: []
   m_BeforeStackBundles: []
   m_AfterStackBundles: []
+  <cameraDepthFlags>k__BackingField: 0
+  <haveBundlesBeenInited>k__BackingField: 0
+  m_Camera: {fileID: 373303813}
+  m_SettingsUpdateNeeded: 1
+  m_IsRenderingInSceneView: 0
+  m_NaNKilled: 0
 --- !u!20 &373303813
 Camera:
   m_ObjectHideFlags: 0
@@ -9272,6 +9285,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 67e89358729230c4eaf9895ec8d87000, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  displayKeyboard: 1
 --- !u!1 &676903201
 GameObject:
   m_ObjectHideFlags: 0
@@ -10137,10 +10151,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   volumeSlider: {fileID: 1564933214}
   volumeValueText: {fileID: 1307769395}
-  brightnessSlider: {fileID: 2125127651}
-  brightness: {fileID: 11400000, guid: e61c479f00dcb4788ad1118cf692d190, type: 2}
-  Layer: {fileID: 2099233302}
-  brightnessValueText: {fileID: 148891908}
   fullscreenToggle: {fileID: 435690328}
   resolutionDropdown: {fileID: 2125488573}
   languageDropdown: {fileID: 1061267407}
@@ -10477,6 +10487,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 67e89358729230c4eaf9895ec8d87000, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  displayKeyboard: 1
 --- !u!1 &743951816
 GameObject:
   m_ObjectHideFlags: 0
@@ -12610,6 +12621,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 67e89358729230c4eaf9895ec8d87000, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  displayKeyboard: 1
 --- !u!1 &889217821
 GameObject:
   m_ObjectHideFlags: 0
@@ -13130,6 +13142,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 67e89358729230c4eaf9895ec8d87000, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  displayKeyboard: 1
 --- !u!1 &950754669
 GameObject:
   m_ObjectHideFlags: 0
@@ -14611,8 +14624,7 @@ MonoBehaviour:
   nameinput: {fileID: 1984371706}
   pininput: {fileID: 733181782}
   picturepathtext: {fileID: 574801218}
-  profilepictureimage: {fileID: 1533192189}
-  selectpicturebutton: {fileID: 1775417882}
+  stockImageGrid: {fileID: 0}
   pinentrypanel: {fileID: 1607250261}
   pinlabel: {fileID: 1004241629}
   pinverifyinput: {fileID: 675815039}
@@ -14624,10 +14636,8 @@ MonoBehaviour:
   editnameinput: {fileID: 921276438}
   editpininput: {fileID: 886410885}
   editpicturepathtext: {fileID: 1846299723}
-  editprofilepictureimage: {fileID: 1471505274}
   editselectpicturebutton: {fileID: 1451538136}
   imageselectorpanel: {fileID: 91448006}
-  stockimage1button: {fileID: 274314400}
   profileslots: {fileID: 1045377766}
   feedbacktext: {fileID: 333912658}
 --- !u!1 &1052549153
@@ -26457,7 +26467,6 @@ MonoBehaviour:
   appIcons: {fileID: 1802550293}
   appIconPrefab: {fileID: 6745645688807049453, guid: 5349c8443268c444f88fd26dacc1e3e0, type: 3}
   noGamesMessage: {fileID: 432109112}
-  description: {fileID: 726893860}
 --- !u!1 &1846299722
 GameObject:
   m_ObjectHideFlags: 0
@@ -27886,6 +27895,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 67e89358729230c4eaf9895ec8d87000, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  displayKeyboard: 1
 --- !u!1 &1986591903
 GameObject:
   m_ObjectHideFlags: 0
@@ -29650,7 +29660,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   volumeTrigger: {fileID: 2099233305}
   volumeLayer:
-    serializedVersion: 2
     m_Bits: 8
   stopNaNPropagation: 1
   finalBlitToCameraTarget: 0
@@ -29660,6 +29669,9 @@ MonoBehaviour:
     sharpness: 0.25
     stationaryBlending: 0.95
     motionBlending: 0.85
+    <jitter>k__BackingField: {x: 0, y: 0}
+    m_ResetHistory: 1
+    <sampleIndex>k__BackingField: 0
   subpixelMorphologicalAntialiasing:
     quality: 2
   fastApproximateAntialiasing:
@@ -29668,21 +29680,18 @@ MonoBehaviour:
   fog:
     enabled: 1
     excludeSkybox: 1
+  dithering:
+    m_NoiseTextureIndex: 10
   debugLayer:
-    lightMeter:
-      width: 512
-      height: 256
-      showCurves: 1
-    histogram:
-      width: 512
-      height: 256
-      channel: 3
-    waveform:
-      exposure: 0.12
-      height: 256
-    vectorscope:
-      size: 256
-      exposure: 0.12
+    lightMeter: {<output>k__BackingField: {fileID: 0}, requested: 0, width: 512, height: 256, showCurves: 1}
+    histogram: {<output>k__BackingField: {fileID: 0}, requested: 0, width: 512, height: 256, channel: 3}
+    waveform: {<output>k__BackingField: {fileID: 0}, requested: 0, exposure: 0.12, height: 256}
+    vectorscope: {<output>k__BackingField: {fileID: 0}, requested: 0, size: 256, exposure: 0.12}
+    frameWidth: 1920
+    frameHeight: 1080
+    <debugOverlayTarget>k__BackingField: {fileID: 0}
+    <debugOverlayActive>k__BackingField: 0
+    <debugOverlay>k__BackingField: 0
     overlaySettings:
       linearDepth: 0
       motionColorIntensity: 4
@@ -29696,6 +29705,12 @@ MonoBehaviour:
   m_BeforeTransparentBundles: []
   m_BeforeStackBundles: []
   m_AfterStackBundles: []
+  <cameraDepthFlags>k__BackingField: 0
+  <haveBundlesBeenInited>k__BackingField: 0
+  m_Camera: {fileID: 2099233304}
+  m_SettingsUpdateNeeded: 1
+  m_IsRenderingInSceneView: 0
+  m_NaNKilled: 0
 --- !u!81 &2099233303
 AudioListener:
   m_ObjectHideFlags: 0
@@ -30461,6 +30476,10 @@ MonoBehaviour:
   blendDistance: 0
   weight: 1
   priority: 0
+  m_PreviousLayer: 0
+  m_PreviousPriority: 0
+  m_TempColliders: []
+  m_InternalProfile: {fileID: 0}
 --- !u!224 &2125127653
 RectTransform:
   m_ObjectHideFlags: 0

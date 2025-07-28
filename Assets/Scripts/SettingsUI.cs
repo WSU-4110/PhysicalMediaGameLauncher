@@ -13,6 +13,9 @@ public class SettingsUI : MonoBehaviour
     public Slider brightnessSlider;
     public PostProcessProfile brightness;
     public PostProcessLayer Layer;
+
+    [Header("Brightness Overlay")]
+    public Image brightnessOverlay;
     AutoExposure exposure;
     public TMP_Text brightnessValueText;
     public Toggle fullscreenToggle;
@@ -95,14 +98,14 @@ public class SettingsUI : MonoBehaviour
     // Called when the brightness slider is changed
     void OnBrightnessChanged(float val)
     {
+        // save to settings & update the textual label as you already do
         SettingsManager.Instance.settings.brightness = val;
         brightnessValueText.text = "Brightness: " + Mathf.RoundToInt(val * 100) + "%";
-        // Apply brightness to the game (e.g., mobile backlight):
-#if UNITY_IOS || UNITY_ANDROID
-        Screen.brightness = val;
-#endif
-        // Apply exposure based on slider (ensuring a small minimum)
-        exposure.keyValue.value = Mathf.Max(val, 0.05f);
+
+        // now drive the overlay: 1 = clear, 0 = black
+        var c = brightnessOverlay.color;
+        c.a = 1f - val;                // if slider is at 1, alpha=0 → fully bright
+        brightnessOverlay.color = c;
     }
 
     // Called when the fullscreen toggle is changed
@@ -139,7 +142,7 @@ public class SettingsUI : MonoBehaviour
     // Save current settings to disk
     public void SaveSettings()
     {
-        SettingsManager.Instance.SaveSettings();
+        SettingsManager.SaveSettings(SettingsManager.Instance.settings);
         UISettingsScreenManager.GoBack();
     }
     void OnThemeChanged(int idx)
