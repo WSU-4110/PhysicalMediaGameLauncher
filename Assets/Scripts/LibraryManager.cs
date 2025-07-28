@@ -64,6 +64,11 @@ public class LibraryManager : MonoBehaviour
             observer.OnLibraryChanged();
     }
 
+    public void CallAwake()
+    {
+        Awake();
+    }
+
     void Awake()
     {
         if (instance != null)
@@ -76,7 +81,15 @@ public class LibraryManager : MonoBehaviour
 
         LoadCache();
         instance = this;
+        #if !UNITY_EDITOR
         DontDestroyOnLoad(gameObject);
+        #endif
+    }
+
+    public void ClearCache()
+    {
+        games.Clear();
+        SaveCache();
     }
 
     private void LoadCache()

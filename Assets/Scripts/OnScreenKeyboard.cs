@@ -9,7 +9,7 @@ using UnityEngine.UI;
 public class OnScreenKeyboard : MonoBehaviour
 {
     public static OnScreenKeyboard instance { get; private set; } = null;
-    private TMP_InputField inputField = null;
+    public TMP_InputField inputField = null;
 
     private Color originalTMPColor;
     public Color selectedTextboxColor;
@@ -57,7 +57,7 @@ public class OnScreenKeyboard : MonoBehaviour
         EventSystem.current.SetSelectedGameObject(btns[0].gameObject);
     }
 
-    void ButtonPressed(string input)
+    public void ButtonPressed(string input)
     {
         if (input == "Confirm")
         {
