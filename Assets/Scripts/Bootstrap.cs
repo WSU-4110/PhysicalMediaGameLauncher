@@ -3,7 +3,7 @@ using UnityEngine.SceneManagement;
 
 public static class PreformBootstrap
 {
-    const string SceneName = "Bootstrap";
+    public static string SceneName = "Bootstrap";
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
     public static void Execute()
