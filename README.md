@@ -1,6 +1,5 @@
 # Game Launcher with Physical Media Support
 
-## Description
 With physical media being discarded in favor of digital licenses, this launcher aims to bring back the physical media expierence to people everywhere! After setting up a USB, CD/DVD, SD Card, or even a Floppy Disk (any drive that can be successfully read by your operating system is supported!) to follow the right structure this launcher expects, you can easily plug in the device and the launcher will display all the games on it! You can even carry that physical device over to another system, plug it in, and get them all to show up there! To learn more about how to set up the launcher, check out the [Installation guide here](https://github.com/WSU-4110/PhysicalMediaGameLauncher/blob/main/INSTALLATION.md)!
 
 ## Requirements for setting up the Project (Editor)
